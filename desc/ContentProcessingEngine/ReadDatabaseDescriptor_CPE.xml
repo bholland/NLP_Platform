@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <implementationName>descriptors.ReadDatabaseDescriptor_CPE</implementationName>
+  <processingResourceMetaData>
+    <name>ReadDatabaseDescriptor_CPE_2</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>DatabaseServer</name>
+        <description>The database server to connect to.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>Database</name>
+        <description>Database to connect to on the server.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>DatabaseUserName</name>
+        <description>The username for the connecting user</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>DatabasePassword</name>
+        <description>Password for the associated database user. Please note that this is clearcase in plain text. There might be additional options to connect to a database, but for now, localhost is the database to connect to.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>DatabasePort</name>
+        <description>This is the port to atempt to connect to. If this is not provided, it will atempt to connect to the default port based on the type provided.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>DatabaseType</name>
+        <description>This is the database type we are trying to connect to. This is required if the DatabasePort value is not assigned. The port will be assigned the default value for the database type.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>DataTableName</name>
+        <description>The table to use for this anlaysis.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>DatabaseServer</name>
+        <value>
+          <string>localhost</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>DatabaseUserName</name>
+        <value>
+          <string>root</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>Database</name>
+        <value>
+          <string>nlp_testing</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>DatabasePassword</name>
+        <value>
+          <string>password</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>DatabasePort</name>
+        <value>
+          <string>3306</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>DataTableName</name>
+        <value>
+          <string>comment_counts</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+<typeSystemDescription>
+      <imports>
+        <import location="../objects/UnprocessedText.xml"/>
+      <import location="../objects/DatabaseConnection.xml"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">objects.UnprocessedText</type>
+        <type allAnnotatorFeatures="true">objects.DatabaseConnection</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </processingResourceMetaData>
+  <resourceManagerConfiguration/>
+</collectionReaderDescription>

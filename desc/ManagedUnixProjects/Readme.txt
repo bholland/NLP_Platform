@@ -14,5 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------------
-# NLP_Platform
-Apache based NLP platform with database integration
+Readme:
+
+The Managed Unix Projects folder contains all of the project specifications. Here, each file
+is a content processing engine (CPE). The UIMA component descriptor editor (the nice UI)
+does not have a UI for the CPE. Under the source tab and the XML view, you define the two
+pieces of a project. The first piece defines an iterator and the second piece defines the set
+of descriptors.  

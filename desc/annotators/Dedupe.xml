@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>  <annotatorImplementationName>annotators.Dedupe</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>FindNames</name>
+    <description/>
+    <version>1.0</version>
+    <vendor/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>RangePlusMinus</name>
+        <description>This sets up the range for the token num. For example, if this is set to 10, it will select ranges from 0.90 to 1.10 times the number of tokens. 
+
+This is a percentage and must be within the rage of 0 to 100;
+
+If the number of tokens in the current document is 100 and RangePlusMinus is 10, it will select all text that is between 90 and 110 tokens.</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>LevenshteinDistanceRatio</name>
+        <description>The Levenshtein Distance ratio.</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>DataTableName</name>
+        <description>The data table that contains text to compare.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>RangePlusMinus</name>
+        <value>
+          <integer>15</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>DataTableName</name>
+        <value>
+          <string>mass_campaigns</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>LevenshteinDistanceRatio</name>
+        <value>
+          <integer>20</integer>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <imports>
+        <import location="../objects/Sentence.xml"/>
+        <import location="../objects/DatabaseConnection.xml"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+  <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>
