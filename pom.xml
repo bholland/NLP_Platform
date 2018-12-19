@@ -1,0 +1,331 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>NLP_Platform</groupId>
+  <artifactId>nlp_platform</artifactId>
+  <version>0.0.3-SNAPSHOT</version>
+
+  <properties>
+    <!-- add variables here and refer to them as ${variable} below -->
+    <!--
+	<dl4j.version>0.9.1</dl4j.version>
+	<nd4j.version>0.9.1</nd4j.version>
+    -->
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+  </build>
+  
+  <profiles>
+    <profile>
+      <id>main</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+              <source>1.10</source>
+              <target>1.10</target>
+            </configuration>
+          </plugin>
+          
+          
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.20.1</version>
+            <configuration>
+              <systemPropertyVariables>
+                <log4j.configuration>file:${project.build.directory}/../src/logging.properties</log4j.configuration>
+              </systemPropertyVariables>
+              <parallel>classes</parallel>
+              <threadCount>6</threadCount>
+              <!-- 
+                   When debugging unit tests, make this 0 to enable breakpoints. 0 will run unit tests in the main thread.
+                   When running code, make this 1. The application has to fork. Otherwise, nd4j will throw a runtime
+                   error about how a library was already loaded. It gets loaded by the unit tests and not released.  
+              -->
+              <forkCount>0</forkCount> 
+            </configuration>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <version>2.10</version>
+            <configuration>
+              <downloadSources>true</downloadSources>
+              <downloadJavadocs>true</downloadJavadocs>
+            </configuration>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                  <goal>test-jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            
+            <configuration>
+              <attach>true</attach>
+              <mainClass>main_class.main_class</mainClass>
+              <!-- <mainClass>tf_idf.main_class</mainClass> -->
+              <arguments>
+                <!-- add testing CPE xml documents here -->
+                <argument>
+                  Collection_Processor_Example.xml
+                </argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+</profiles>
+
+<dependencies>
+  <dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native-platform</artifactId>
+    <version>1.0.0-beta3</version>
+    <classifier>linux-x86_64</classifier>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-core</artifactId>
+    <version>1.0.0-beta3</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-nlp</artifactId>
+    <version>1.0.0-beta3</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.deeplearning4j</groupId>
+    <artifactId>deeplearning4j-nlp-uima</artifactId>
+    <version>1.0.0-beta3</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>net.java.dev.jna</groupId>
+    <artifactId>jna</artifactId>
+    <version>5.1.0</version>
+  </dependency>
+  
+  <!-- Spell checker -->
+  <dependency>
+    <groupId>org.languagetool</groupId>
+    <artifactId>language-en</artifactId>
+    <version>4.3</version>
+  </dependency>
+  
+  <!-- UIMA -->
+  <!-- https://mvnrepository.com/artifact/org.apache.uima/uimaj-core -->
+  <dependency>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-core</artifactId>
+    <version>3.0.1</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.uima/uimaj-tools -->
+  <dependency>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-tools</artifactId>
+    <version>3.0.1</version>
+  </dependency>
+  
+  <!-- OpenNLP -->
+  <!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-tools -->
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-tools -->
+  <dependency>
+    <groupId>org.apache.opennlp</groupId>
+    <artifactId>opennlp-tools</artifactId>
+    <version>1.9.0</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-maxent -->
+  <dependency>
+    <groupId>org.apache.opennlp</groupId>
+    <artifactId>opennlp-maxent</artifactId>
+    <version>3.0.3</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.opennlp/opennlp-brat-annotator -->
+  <dependency>
+    <groupId>org.apache.opennlp</groupId>
+    <artifactId>opennlp-brat-annotator</artifactId>
+    <version>1.9.0</version>
+  </dependency>
+  
+  <!-- Hadoop -->
+  <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
+  <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-core_2.11</artifactId>
+    <version>2.4.0</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
+  <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-sql_2.11</artifactId>
+    <version>2.4.0</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-common -->
+  <dependency>
+    <groupId>org.apache.hadoop</groupId>
+    <artifactId>hadoop-common</artifactId>
+    <version>3.1.1</version>
+    <scope>provided</scope>
+  </dependency>
+  
+  <!-- Apache Commons -->
+  <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+  <dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.6</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.8.1</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+  <dependency>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+    <version>1.2</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
+  <dependency>
+    <groupId>commons-cli</groupId>
+    <artifactId>commons-cli</artifactId>
+    <version>1.4</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-csv</artifactId>
+    <version>1.6</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-text</artifactId>
+    <version>1.6</version>
+  </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+  <dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.13</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.2.5.jre7</version>
+  </dependency>
+  
+  <!-- ClearTK -->
+  <dependency>
+    <groupId>org.cleartk</groupId>
+    <artifactId>cleartk-ml</artifactId>
+    <version>2.0.0</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.cleartk</groupId>
+    <artifactId>cleartk-ml-liblinear</artifactId>
+    <version>2.0.0</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version>
+  </dependency>
+  
+  <!-- Mallet API for Machine Learning -->
+  <dependency>
+    <groupId>com.github.steveash.mallet</groupId>
+    <artifactId>mallet</artifactId>
+    <version>2.0.12</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-source-plugin</artifactId>
+    <version>3.0.1</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.apache.pdfbox</groupId>
+    <artifactId>pdfbox</artifactId>
+    <version>2.0.13</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.apache.pdfbox</groupId>
+    <artifactId>pdfbox-tools</artifactId>
+    <version>2.0.13</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.jsoup</groupId>
+    <artifactId>jsoup</artifactId>
+    <version>1.11.3</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>de.sven-jacobs</groupId>
+    <artifactId>loremipsum</artifactId>
+    <version>1.0</version>
+    <scope>test</scope>
+  </dependency>
+  
+</dependencies>
+<scm>
+<connection>scm:svn:http://127.0.0.1/home/ben/workspace/opennlp_processing</connection>
+<developerConnection>scm:svn:https://127.0.0.1/home/ben/workspace/opennlp_processing</developerConnection>
+<tag>HEAD</tag>
+</scm>
+
+</project>
