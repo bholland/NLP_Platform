@@ -1,35 +1,35 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-/* First created by JCasGen Fri Apr 06 14:47:16 EDT 2018 */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Tue Dec 18 13:10:52 EST 2018 */
+
 package objects;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 
-import org.apache.uima.jcas.cas.StringArray;
+
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Apr 10 14:52:37 EDT 2018
- * XML source: /home/ben/workspace/opennlp_processing/desc/objects/UnprocessedText.xml
+ * Updated by JCasGen Tue Dec 18 13:10:52 EST 2018
+ * XML source: /home/ben/workspace/NLP_Stack/desc/objects/UnprocessedText.xml
  * @generated */
 public class UnprocessedText extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "objects.UnprocessedText";
+  
   /** @generated
    * @ordered 
    */
@@ -46,17 +46,39 @@ public class UnprocessedText extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_RawTextString = "RawTextString";
+  public final static String _FeatName_TextId = "TextId";
+  public final static String _FeatName_NumTokens = "NumTokens";
+  public final static String _FeatName_IsDocument = "IsDocument";
+
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_RawTextString = TypeSystemImpl.createCallSite(UnprocessedText.class, "RawTextString");
+  private final static MethodHandle _FH_RawTextString = _FC_RawTextString.dynamicInvoker();
+  private final static CallSite _FC_TextId = TypeSystemImpl.createCallSite(UnprocessedText.class, "TextId");
+  private final static MethodHandle _FH_TextId = _FC_TextId.dynamicInvoker();
+  private final static CallSite _FC_NumTokens = TypeSystemImpl.createCallSite(UnprocessedText.class, "NumTokens");
+  private final static MethodHandle _FH_NumTokens = _FC_NumTokens.dynamicInvoker();
+  private final static CallSite _FC_IsDocument = TypeSystemImpl.createCallSite(UnprocessedText.class, "IsDocument");
+  private final static MethodHandle _FH_IsDocument = _FC_IsDocument.dynamicInvoker();
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected UnprocessedText() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public UnprocessedText(int addr, TOP_Type type) {
-    super(addr, type);
+  public UnprocessedText(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -67,6 +89,7 @@ public class UnprocessedText extends Annotation {
     super(jcas);
     readObject();   
   } 
+
 
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs
@@ -98,19 +121,16 @@ public class UnprocessedText extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getRawTextString() {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_RawTextString == null)
-      jcasType.jcas.throwFeatMissing("RawTextString", "objects.UnprocessedText");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_RawTextString);}
+  public String getRawTextString() { return _getStringValueNc(wrapGetIntCatchException(_FH_RawTextString));}
     
   /** setter for RawTextString - sets This is the raw text of the input document. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setRawTextString(String v) {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_RawTextString == null)
-      jcasType.jcas.throwFeatMissing("RawTextString", "objects.UnprocessedText");
-    jcasType.ll_cas.ll_setStringValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_RawTextString, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_RawTextString), v);
+  }    
+    
    
     
   //*--------------*
@@ -120,19 +140,16 @@ public class UnprocessedText extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getTextId() {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_TextId == null)
-      jcasType.jcas.throwFeatMissing("TextId", "objects.UnprocessedText");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_TextId);}
+  public int getTextId() { return _getIntValueNc(wrapGetIntCatchException(_FH_TextId));}
     
   /** setter for TextId - sets Text id from the database. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setTextId(int v) {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_TextId == null)
-      jcasType.jcas.throwFeatMissing("TextId", "objects.UnprocessedText");
-    jcasType.ll_cas.ll_setIntValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_TextId, v);}    
+    _setIntValueNfc(wrapGetIntCatchException(_FH_TextId), v);
+  }    
+    
    
     
   //*--------------*
@@ -142,41 +159,35 @@ public class UnprocessedText extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getNumTokens() {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_NumTokens == null)
-      jcasType.jcas.throwFeatMissing("NumTokens", "objects.UnprocessedText");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_NumTokens);}
+  public int getNumTokens() { return _getIntValueNc(wrapGetIntCatchException(_FH_NumTokens));}
     
   /** setter for NumTokens - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setNumTokens(int v) {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_NumTokens == null)
-      jcasType.jcas.throwFeatMissing("NumTokens", "objects.UnprocessedText");
-    jcasType.ll_cas.ll_setIntValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_NumTokens, v);}    
+    _setIntValueNfc(wrapGetIntCatchException(_FH_NumTokens), v);
+  }    
+    
    
     
   //*--------------*
-  //* Feature: IsSource
+  //* Feature: IsDocument
 
-  /** getter for IsSource - gets Is this is a source or a category document?
+  /** getter for IsDocument - gets Is this is a document to categorize or is this training material?
    * @generated
    * @return value of the feature 
    */
-  public boolean getIsSource() {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_IsSource == null)
-      jcasType.jcas.throwFeatMissing("IsSource", "objects.UnprocessedText");
-    return jcasType.ll_cas.ll_getBooleanValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_IsSource);}
+  public boolean getIsDocument() { return _getBooleanValueNc(wrapGetIntCatchException(_FH_IsDocument));}
     
-  /** setter for IsSource - sets Is this is a source or a category document? 
+  /** setter for IsDocument - sets Is this is a document to categorize or is this training material? 
    * @generated
    * @param v value to set into the feature 
    */
-  public void setIsSource(boolean v) {
-    if (UnprocessedText_Type.featOkTst && ((UnprocessedText_Type)jcasType).casFeat_IsSource == null)
-      jcasType.jcas.throwFeatMissing("IsSource", "objects.UnprocessedText");
-    jcasType.ll_cas.ll_setBooleanValue(addr, ((UnprocessedText_Type)jcasType).casFeatCode_IsSource, v);}    
+  public void setIsDocument(boolean v) {
+    _setBooleanValueNfc(wrapGetIntCatchException(_FH_IsDocument), v);
+  }    
+    
   }
 
     

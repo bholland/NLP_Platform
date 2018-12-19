@@ -98,13 +98,13 @@
     <nameValuePair>
         <name>DatabaseUserName</name>
         <value>
-          <string>ben</string>
+          <string>user</string>
         </value>
       </nameValuePair>
     <nameValuePair>
         <name>Database</name>
         <value>
-          <string>nlp_template</string>
+          <string>nlp_testing</string>
         </value>
       </nameValuePair>
       <nameValuePair>

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package annotators;
 
 import java.io.BufferedOutputStream;
@@ -50,12 +34,15 @@ import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.spelling.SpellingCheckRule;
 
 import database.DatabaseConnector;
+import helper.DatabaseHelper;
 import objects.DatabaseConnection;
 import objects.PdfObject;
 import objects.Sentence;
 import objects.UnprocessedText;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
+import opennlp.tools.lemmatizer.DictionaryLemmatizer;
+import opennlp.tools.lemmatizer.LemmatizerModel;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
@@ -77,6 +64,8 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         String[] mTokens;
         String[] mTags;
         String[] mChunks;
+        String[] mStemmedTokens;
+        
         ArrayList<String> mNamesList; 
         Span[] mNamesSpan;
         Span[] mHospitalSpan;
@@ -88,20 +77,22 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         private POSTaggerME mPOSTagger = null;
         private NameFinderME mNameFinder = null;
         private ChunkerME mChunker = null;
+        private DictionaryLemmatizer mStemmer = null;
         private NameFinderME mHospitalFinder = null;
         private NameFinderME mIllnessFinder = null;
         private NameFinderME mPersonFinder = null;
         
         public SentenceReturn(TokenizerME Tokenizer, POSTaggerME POSTagger,
-                ChunkerME Chunker, NameFinderME NameFinder) {
+                ChunkerME Chunker, DictionaryLemmatizer Stemmer, NameFinderME NameFinder) {
             mTokenizer = Tokenizer;
             mPOSTagger = POSTagger;
             mNameFinder = NameFinder;
             mChunker = Chunker;
+            mStemmer = Stemmer;
         }
         
         public SentenceReturn(TokenizerME Tokenizer, POSTaggerME POSTagger,
-                ChunkerME Chunker, NameFinderME HospitalFinder,
+                ChunkerME Chunker, DictionaryLemmatizer Stemmer, NameFinderME HospitalFinder,
                 NameFinderME IllnessFinder, NameFinderME PersonFinder) {
             mTokenizer = Tokenizer;
             mPOSTagger = POSTagger;
@@ -109,12 +100,14 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
             mIllnessFinder = IllnessFinder;
             mPersonFinder = PersonFinder;
             mChunker = Chunker;
+            mStemmer = Stemmer;
         }
         
         public void process(String s) {
             mTokens = mTokenizer.tokenize(s);
             mTags = mPOSTagger.tag(mTokens);
             mChunks = mChunker.chunk(mTokens, mTags);
+            mStemmedTokens = mStemmer.lemmatize(mTokens, mTags);
             mNamesSpan = (mNameFinder != null) ? mNameFinder.find(mTokens) : null;
             mHospitalSpan = (mHospitalFinder != null) ? mHospitalFinder.find(mTokens) : null;
             mIllnessSpan = (mIllnessFinder != null) ? mIllnessFinder.find(mTokens) : null;
@@ -123,6 +116,10 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         
         public String[] getTokens() {
             return mTokens;
+        }
+        
+        public String[] getStemmedTokens() {
+            return mStemmedTokens;
         }
         
         public String[] getTags() {
@@ -182,6 +179,8 @@ public Span[] getNamesSpan() {
      */
     public static final String PARAM_CHUNKER_MODEL_FILE = "ChunkerModelFile";
     
+    public static final String PARAM_STEMMER_FILE = "StemmerFile";
+    
     public static final String PARAM_HOSPITAL_MODEL_FILE = "HospitalFinderModelFile";
     
     public static final String PARAM_ILLNESS_MODEL_FILE = "IllnessFinderModelFile";
@@ -190,15 +189,20 @@ public Span[] getNamesSpan() {
             
     public static final String PARAM_IGNORE_LIST_FILE = "IgnoreListFile";
     
+    public static final String PARAM_IGNORE_GRAMMER = "IgnoreGrammer";
+    
     private SentenceDetectorME mSentenceDetector;
     private TokenizerME mTokenizer;
     private POSTaggerME mPOSTagger;
     private NameFinderME mNameFinder;
     private ChunkerME mChunker;
+    private DictionaryLemmatizer mStemmer;
     
     private NameFinderME mHospitalFinder;
     private NameFinderME mIllnessFinder;
-    private NameFinderME mPersonFinder; 
+    private NameFinderME mPersonFinder;
+    
+    private Boolean mIgnoreGrammer;
     
     private ArrayList<String> mIgnoreList; 
     
@@ -228,6 +232,10 @@ public Span[] getNamesSpan() {
         StringArray token_array = new StringArray(aJCas, copy_size);
         token_array.copyFromArray(sr.getTokens(), 0, 0, copy_size);
         sentence.setWords(token_array);
+        
+        StringArray stemmed_token_array = new StringArray(aJCas, copy_size);
+        stemmed_token_array.copyFromArray(sr.getStemmedTokens(), 0, 0, copy_size);
+        sentence.setLemma_tags(stemmed_token_array);
         
         StringArray tags_array = new StringArray(aJCas, copy_size);
         tags_array.copyFromArray(sr.getTags(), 0, 0, copy_size);
@@ -283,7 +291,7 @@ public Span[] getNamesSpan() {
         return token_array.size();
     }
     
-    private String spellcheckText(int text_id, String text) {
+    private String spellcheckText(Integer user_id, int text_id, String text, Connection connection) throws SQLException {
         try {
             //This is very important. Check spelling before text gets processed. This will fix
             //annoying issues like a period not followed by a space.  
@@ -300,6 +308,21 @@ public Span[] getNamesSpan() {
             Logger logger = Logger.getRootLogger();
             for (RuleMatch match : matches) {
                 Category c = match.getRule().getCategory();
+                
+                if (c.getId().toString().toLowerCase().equals("grammar") && mIgnoreGrammer == true) {
+                    continue;
+                }
+                
+                /*if (match.getMessage().startsWith("Possible agreement error. The noun")) {
+                    System.out.println(c);
+                    System.out.println(c.getId().toString());
+                }*/
+                
+                //ignore starting with capital letters. 
+                if (c.toString().toLowerCase().equals("capitalization") && match.getMessage().equals("This sentence does not start with an uppercase letter")) {
+                    continue;
+                }
+                
                 //System.out.println(String.format("Cat: %s \nMessage: %s \nShort: %s \nSuggestions: %s", c.getName(), match.getMessage(), match.getShortMessage(), match.getSuggestedReplacements() ));
                 String recomendation = "";
                 if (match.getSuggestedReplacements().size() > 0) {
@@ -314,7 +337,12 @@ public Span[] getNamesSpan() {
                         for (int x = 0; x < token.getReadingsLength(); x++) {
                             AnalyzedToken t = token.getAnalyzedToken(0);
                             //System.out.println(String.format("%s: %s", t.getToken(), t.getPOSTag()));
-                            if (t.getPOSTag() != null && (t.getPOSTag().equals("NNS") || t.getPOSTag().equals("NN"))) {
+                            if (match.getMessage().equals("Possible spelling mistake found")) {
+                                DatabaseHelper.insertSpellingCorrection(connection, user_id, text.substring(match.getFromPos(),  match.getToPos()), recomendation);
+                            } else if (t.getPOSTag() != null && 
+                                    !match.getMessage().equals("Possible typo: you repeated a whitespace") &&
+                                    !match.getMessage().equals("Don't put a space before the closing parenthesis") &&
+                                    !match.getMessage().equals("Don't put a space after the opening parenthesis")) {// && (t.getPOSTag().equals("NNS") || t.getPOSTag().equals("NN"))) {
                                 String message = String.format("Error found with text id: %s\n" +
                                         "Message: %s\n" +
                                         "Sentence: %s\n" +
@@ -357,9 +385,9 @@ public Span[] getNamesSpan() {
     private int processText(JCas aJCas, String text, int text_id) {
         SentenceReturn sr = null;
         if (mHospitalFinder != null) {
-            sr = new SentenceReturn(mTokenizer, mPOSTagger, mChunker, mHospitalFinder, mIllnessFinder, mPersonFinder);
+            sr = new SentenceReturn(mTokenizer, mPOSTagger, mChunker, mStemmer, mHospitalFinder, mIllnessFinder, mPersonFinder);
         } else {
-            sr = new SentenceReturn(mTokenizer, mPOSTagger, mChunker, mNameFinder);
+            sr = new SentenceReturn(mTokenizer, mPOSTagger, mChunker, mStemmer, mNameFinder);
         }
         
         String[] setences = mSentenceDetector.sentDetect(text);
@@ -419,6 +447,61 @@ public Span[] getNamesSpan() {
         CharSequence amp = "&amp";
         CharSequence amp_replace = "&";
         s = s.replace(amp, amp_replace);
+        
+        CharSequence plus = "+";
+        CharSequence plus_replace = " ";
+        s = s.replace(plus, plus_replace);
+        
+        CharSequence slash = "/";
+        CharSequence slash_replace = " ";
+        s = s.replace(slash, slash_replace);
+        
+        CharSequence co = "co-";
+        if (!s.contains(co)) {
+            CharSequence dash = "-";
+            CharSequence dash_replace = " ";
+            s = s.replace(dash, dash_replace);
+        }
+        
+        CharSequence gt = ">";
+        CharSequence gt_replace = " > ";
+        s = s.replace(slash, slash_replace);
+        
+        CharSequence eq = "=";
+        CharSequence eq_replace = " = ";
+        s = s.replace(eq, eq_replace);
+        
+        CharSequence lt = "<";
+        CharSequence lt_replace = " < ";
+        s = s.replace(lt, lt_replace);
+        
+        CharSequence cln = ":";
+        CharSequence cln_replace = " ";
+        s = s.replace(cln, cln_replace);
+        
+        cln = ";";
+        s = s.replace(cln, cln_replace);
+        
+        cln = "*";
+        s = s.replace(cln, cln_replace);     
+
+        CharSequence quote = "\"";
+        CharSequence quote_replace = " \" ";
+        s = s.replace(quote, quote_replace);
+        
+        CharSequence openparen = "(";
+        CharSequence openparen_replace = " ( ";
+        s = s.replace(openparen, openparen_replace);
+        
+        CharSequence closeparen = ")";
+        CharSequence closeparen_replace = " ) ";
+        s = s.replace(closeparen, closeparen_replace);
+        
+        CharSequence comma = ",";
+        CharSequence comma_replace = ", ";
+        s = s.replace(comma, comma_replace);
+        
+        
         return s;
     }
     
@@ -506,6 +589,15 @@ public Span[] getNamesSpan() {
             e.printStackTrace();
         }
         
+        try {
+            String model_file = (String) getContext().getConfigParameterValue(PARAM_STEMMER_FILE);
+            File in_file = new File(model_file);
+            mStemmer = new DictionaryLemmatizer(in_file);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
         String ignore_file = (String) getContext().getConfigParameterValue(PARAM_IGNORE_LIST_FILE);
         mIgnoreList = new ArrayList<String>();
         if (ignore_file != null ) {
@@ -523,6 +615,8 @@ public Span[] getNamesSpan() {
             }
         }
         
+        mIgnoreGrammer = (Boolean) getContext().getConfigParameterValue(PARAM_IGNORE_GRAMMER);
+        
     }
     
     @Override
@@ -532,7 +626,6 @@ public Span[] getNamesSpan() {
         if (input_document == null) {
             return;
         }
-        input_document = cleanText(input_document);
                
         FSIterator<Annotation> ut = aJCas.getAnnotationIndex(UnprocessedText.type).iterator();
         assert (ut.hasNext()) : "Sentence splitting annotator does not have an associated unprocessed text document";
@@ -540,8 +633,8 @@ public Span[] getNamesSpan() {
         UnprocessedText raw_text = (UnprocessedText) ut.next();
         Integer unprocessed_text_id = raw_text.getTextId();
         
-        Logger logger = Logger.getRootLogger();
-        logger.info(String.format("Working on ID: %s", unprocessed_text_id));
+        //Logger logger = Logger.getRootLogger();
+        //logger.info(String.format("Working on ID: %s", unprocessed_text_id));
 
         assert(ut.hasNext() == false) : "More than one raw text document exists in the aJCas object.";
         
@@ -555,22 +648,26 @@ public Span[] getNamesSpan() {
             throw new AnalysisEngineProcessException("A database object was not configured for this CAS" , new Object[] {} );
         }
         
-        try (DatabaseConnector sql_connector = new DatabaseConnector(database_connection)) {
-            sql_connector.connect();
-            Connection sql_connection = sql_connector.getConnection();
+        try (DatabaseConnector connector = new DatabaseConnector(database_connection)) {
+        	connector.connect();
+            Connection sql_connection = connector.getConnection();
             CallableStatement sp_call = null;
-            if (raw_text.getIsSource()) {
+            if (raw_text.getIsDocument()) {
                 sp_call = sql_connection.prepareCall("{call clean_source_sentences(?)}");
             } else {
                 sp_call = sql_connection.prepareCall("{call clean_category_sentences(?)}");
             }
             sp_call.setInt(1, unprocessed_text_id);
             sp_call.execute();
+            
+            input_document = cleanText(input_document);
+            input_document = spellcheckText(connector.getLoggingUserId(), unprocessed_text_id, input_document, sql_connection);
+            input_document = input_document.toLowerCase();
+            
         } catch (SQLException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         
-        input_document = spellcheckText(unprocessed_text_id, input_document);
         int num_tokens = processText(aJCas, input_document, unprocessed_text_id);
         raw_text.setNumTokens(num_tokens);
         
@@ -578,7 +675,7 @@ public Span[] getNamesSpan() {
             mysql_connector.connect();
             Connection sql_connection = mysql_connector.getConnection();
             CallableStatement sp_call = null;
-            if (raw_text.getIsSource()) {
+            if (raw_text.getIsDocument()) {
                 sp_call = sql_connection.prepareCall("{call insert_source_token_count(?, ?, ?)}");
             } else {
                 sp_call = sql_connection.prepareCall("{call insert_category_token_count(?, ?, ?)}");
@@ -591,6 +688,6 @@ public Span[] getNamesSpan() {
             e.printStackTrace();
         }
         
-        logger.info(String.format("Finished ID: %s", unprocessed_text_id));
+        //logger.info(String.format("Finished ID: %s", unprocessed_text_id));
     }
 }

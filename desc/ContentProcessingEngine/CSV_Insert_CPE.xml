@@ -104,13 +104,13 @@ Accepted values are "mysql" and "pgsql".</description>
     <nameValuePair>
         <name>DatabaseUserName</name>
         <value>
-          <string>ben</string>
+          <string>user</string>
         </value>
       </nameValuePair>
     <nameValuePair>
         <name>Database</name>
         <value>
-          <string>nlp_template</string>
+          <string>nlp_platform</string>
         </value>
       </nameValuePair>
       <nameValuePair>

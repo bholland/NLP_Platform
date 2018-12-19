@@ -1,38 +1,37 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-/* First created by JCasGen Fri Sep 15 14:51:31 EDT 2017 */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Wed Oct 17 18:46:58 EDT 2018 */
+
 package objects;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+
 
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
-
-
 import org.apache.uima.jcas.cas.BooleanArray;
 
 
 /** 
- * Updated by JCasGen Sun Oct 15 18:46:06 EDT 2017
+ * Updated by JCasGen Wed Oct 17 18:46:58 EDT 2018
  * XML source: /home/ben/workspace/opennlp_processing/desc/objects/Sentence.xml
  * @generated */
 public class Sentence extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "objects.Sentence";
+  
   /** @generated
    * @ordered 
    */
@@ -49,17 +48,66 @@ public class Sentence extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_words = "words";
+  public final static String _FeatName_pos_tags = "pos_tags";
+  public final static String _FeatName_lemma_tags = "lemma_tags";
+  public final static String _FeatName_text_string = "text_string";
+  public final static String _FeatName_chunks = "chunks";
+  public final static String _FeatName_names = "names";
+  public final static String _FeatName_DocumentID = "DocumentID";
+  public final static String _FeatName_IsName = "IsName";
+  public final static String _FeatName_SentenceNumber = "SentenceNumber";
+  public final static String _FeatName_sentence_id = "sentence_id";
+  public final static String _FeatName_IsHospital = "IsHospital";
+  public final static String _FeatName_IsPerson = "IsPerson";
+  public final static String _FeatName_IsIllness = "IsIllness";
+
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_words = TypeSystemImpl.createCallSite(Sentence.class, "words");
+  private final static MethodHandle _FH_words = _FC_words.dynamicInvoker();
+  private final static CallSite _FC_pos_tags = TypeSystemImpl.createCallSite(Sentence.class, "pos_tags");
+  private final static MethodHandle _FH_pos_tags = _FC_pos_tags.dynamicInvoker();
+  private final static CallSite _FC_lemma_tags = TypeSystemImpl.createCallSite(Sentence.class, "lemma_tags");
+  private final static MethodHandle _FH_lemma_tags = _FC_lemma_tags.dynamicInvoker();
+  private final static CallSite _FC_text_string = TypeSystemImpl.createCallSite(Sentence.class, "text_string");
+  private final static MethodHandle _FH_text_string = _FC_text_string.dynamicInvoker();
+  private final static CallSite _FC_chunks = TypeSystemImpl.createCallSite(Sentence.class, "chunks");
+  private final static MethodHandle _FH_chunks = _FC_chunks.dynamicInvoker();
+  private final static CallSite _FC_names = TypeSystemImpl.createCallSite(Sentence.class, "names");
+  private final static MethodHandle _FH_names = _FC_names.dynamicInvoker();
+  private final static CallSite _FC_DocumentID = TypeSystemImpl.createCallSite(Sentence.class, "DocumentID");
+  private final static MethodHandle _FH_DocumentID = _FC_DocumentID.dynamicInvoker();
+  private final static CallSite _FC_IsName = TypeSystemImpl.createCallSite(Sentence.class, "IsName");
+  private final static MethodHandle _FH_IsName = _FC_IsName.dynamicInvoker();
+  private final static CallSite _FC_SentenceNumber = TypeSystemImpl.createCallSite(Sentence.class, "SentenceNumber");
+  private final static MethodHandle _FH_SentenceNumber = _FC_SentenceNumber.dynamicInvoker();
+  private final static CallSite _FC_sentence_id = TypeSystemImpl.createCallSite(Sentence.class, "sentence_id");
+  private final static MethodHandle _FH_sentence_id = _FC_sentence_id.dynamicInvoker();
+  private final static CallSite _FC_IsHospital = TypeSystemImpl.createCallSite(Sentence.class, "IsHospital");
+  private final static MethodHandle _FH_IsHospital = _FC_IsHospital.dynamicInvoker();
+  private final static CallSite _FC_IsPerson = TypeSystemImpl.createCallSite(Sentence.class, "IsPerson");
+  private final static MethodHandle _FH_IsPerson = _FC_IsPerson.dynamicInvoker();
+  private final static CallSite _FC_IsIllness = TypeSystemImpl.createCallSite(Sentence.class, "IsIllness");
+  private final static MethodHandle _FH_IsIllness = _FC_IsIllness.dynamicInvoker();
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected Sentence() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public Sentence(int addr, TOP_Type type) {
-    super(addr, type);
+  public Sentence(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -70,6 +118,7 @@ public class Sentence extends Annotation {
     super(jcas);
     readObject();   
   } 
+
 
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs
@@ -101,41 +150,33 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getWords() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_words == null)
-      jcasType.jcas.throwFeatMissing("words", "objects.Sentence");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_words)));}
+  public StringArray getWords() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_words)));}
     
   /** setter for words - sets An array of each word in the sentence. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setWords(StringArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_words == null)
-      jcasType.jcas.throwFeatMissing("words", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_words, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_words), v);
+  }    
     
-  /** indexed getter for words - gets an indexed value - An array of each word in the sentence. 
+    
+  /** indexed getter for words - gets an indexed value - An array of each word in the sentence.
    * @generated
    * @param i index in the array to get
    * @return value of the element at index i 
    */
   public String getWords(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_words == null)
-      jcasType.jcas.throwFeatMissing("words", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_words), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_words), i);}
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_words)))).get(i);} 
 
-  /** indexed setter for words - sets an indexed value - An array of each word in the sentence. 
+  /** indexed setter for words - sets an indexed value - An array of each word in the sentence.
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setWords(int i, String v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_words == null)
-      jcasType.jcas.throwFeatMissing("words", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_words), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_words), i, v);}
+  public void setWords(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_words)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -145,41 +186,33 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getPos_tags() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_pos_tags == null)
-      jcasType.jcas.throwFeatMissing("pos_tags", "objects.Sentence");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_pos_tags)));}
+  public StringArray getPos_tags() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_pos_tags)));}
     
   /** setter for pos_tags - sets POS tags for each associated word. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setPos_tags(StringArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_pos_tags == null)
-      jcasType.jcas.throwFeatMissing("pos_tags", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_pos_tags, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_pos_tags), v);
+  }    
     
-  /** indexed getter for pos_tags - gets an indexed value - POS tags for each associated word. 
+    
+  /** indexed getter for pos_tags - gets an indexed value - POS tags for each associated word.
    * @generated
    * @param i index in the array to get
    * @return value of the element at index i 
    */
   public String getPos_tags(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_pos_tags == null)
-      jcasType.jcas.throwFeatMissing("pos_tags", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_pos_tags), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_pos_tags), i);}
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_pos_tags)))).get(i);} 
 
-  /** indexed setter for pos_tags - sets an indexed value - POS tags for each associated word. 
+  /** indexed setter for pos_tags - sets an indexed value - POS tags for each associated word.
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setPos_tags(int i, String v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_pos_tags == null)
-      jcasType.jcas.throwFeatMissing("pos_tags", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_pos_tags), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_pos_tags), i, v);}
+  public void setPos_tags(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_pos_tags)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -189,19 +222,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getLemma_tags() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_lemma_tags == null)
-      jcasType.jcas.throwFeatMissing("lemma_tags", "objects.Sentence");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_lemma_tags)));}
+  public StringArray getLemma_tags() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemma_tags)));}
     
   /** setter for lemma_tags - sets Lemmintized words 
    * @generated
    * @param v value to set into the feature 
    */
   public void setLemma_tags(StringArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_lemma_tags == null)
-      jcasType.jcas.throwFeatMissing("lemma_tags", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_lemma_tags, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_lemma_tags), v);
+  }    
+    
     
   /** indexed getter for lemma_tags - gets an indexed value - Lemmintized words
    * @generated
@@ -209,21 +239,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public String getLemma_tags(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_lemma_tags == null)
-      jcasType.jcas.throwFeatMissing("lemma_tags", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_lemma_tags), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_lemma_tags), i);}
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemma_tags)))).get(i);} 
 
   /** indexed setter for lemma_tags - sets an indexed value - Lemmintized words
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setLemma_tags(int i, String v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_lemma_tags == null)
-      jcasType.jcas.throwFeatMissing("lemma_tags", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_lemma_tags), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_lemma_tags), i, v);}
+  public void setLemma_tags(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemma_tags)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -233,19 +258,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getText_string() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_text_string == null)
-      jcasType.jcas.throwFeatMissing("text_string", "objects.Sentence");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((Sentence_Type)jcasType).casFeatCode_text_string);}
+  public String getText_string() { return _getStringValueNc(wrapGetIntCatchException(_FH_text_string));}
     
   /** setter for text_string - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setText_string(String v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_text_string == null)
-      jcasType.jcas.throwFeatMissing("text_string", "objects.Sentence");
-    jcasType.ll_cas.ll_setStringValue(addr, ((Sentence_Type)jcasType).casFeatCode_text_string, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_text_string), v);
+  }    
+    
    
     
   //*--------------*
@@ -255,19 +277,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getChunks() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_chunks == null)
-      jcasType.jcas.throwFeatMissing("chunks", "objects.Sentence");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_chunks)));}
+  public StringArray getChunks() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_chunks)));}
     
   /** setter for chunks - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setChunks(StringArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_chunks == null)
-      jcasType.jcas.throwFeatMissing("chunks", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_chunks, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_chunks), v);
+  }    
+    
     
   /** indexed getter for chunks - gets an indexed value - 
    * @generated
@@ -275,21 +294,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public String getChunks(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_chunks == null)
-      jcasType.jcas.throwFeatMissing("chunks", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_chunks), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_chunks), i);}
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_chunks)))).get(i);} 
 
   /** indexed setter for chunks - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setChunks(int i, String v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_chunks == null)
-      jcasType.jcas.throwFeatMissing("chunks", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_chunks), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_chunks), i, v);}
+  public void setChunks(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_chunks)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -299,19 +313,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getNames() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_names == null)
-      jcasType.jcas.throwFeatMissing("names", "objects.Sentence");
-    return (StringArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_names)));}
+  public StringArray getNames() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_names)));}
     
   /** setter for names - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setNames(StringArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_names == null)
-      jcasType.jcas.throwFeatMissing("names", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_names, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_names), v);
+  }    
+    
     
   /** indexed getter for names - gets an indexed value - 
    * @generated
@@ -319,21 +330,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public String getNames(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_names == null)
-      jcasType.jcas.throwFeatMissing("names", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_names), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_names), i);}
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_names)))).get(i);} 
 
   /** indexed setter for names - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setNames(int i, String v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_names == null)
-      jcasType.jcas.throwFeatMissing("names", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_names), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_names), i, v);}
+  public void setNames(int i, String v) {
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_names)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -343,19 +349,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getDocumentID() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_DocumentID == null)
-      jcasType.jcas.throwFeatMissing("DocumentID", "objects.Sentence");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Sentence_Type)jcasType).casFeatCode_DocumentID);}
+  public int getDocumentID() { return _getIntValueNc(wrapGetIntCatchException(_FH_DocumentID));}
     
   /** setter for DocumentID - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setDocumentID(int v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_DocumentID == null)
-      jcasType.jcas.throwFeatMissing("DocumentID", "objects.Sentence");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Sentence_Type)jcasType).casFeatCode_DocumentID, v);}    
+    _setIntValueNfc(wrapGetIntCatchException(_FH_DocumentID), v);
+  }    
+    
    
     
   //*--------------*
@@ -365,19 +368,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public BooleanArray getIsName() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsName == null)
-      jcasType.jcas.throwFeatMissing("IsName", "objects.Sentence");
-    return (BooleanArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsName)));}
+  public BooleanArray getIsName() { return (BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsName)));}
     
   /** setter for IsName - sets An array of boolean values where true means this word is a name. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setIsName(BooleanArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsName == null)
-      jcasType.jcas.throwFeatMissing("IsName", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsName, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_IsName), v);
+  }    
+    
     
   /** indexed getter for IsName - gets an indexed value - An array of boolean values where true means this word is a name.
    * @generated
@@ -385,21 +385,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public boolean getIsName(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsName == null)
-      jcasType.jcas.throwFeatMissing("IsName", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsName), i);
-    return jcasType.ll_cas.ll_getBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsName), i);}
+     return ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsName)))).get(i);} 
 
   /** indexed setter for IsName - sets an indexed value - An array of boolean values where true means this word is a name.
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setIsName(int i, boolean v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsName == null)
-      jcasType.jcas.throwFeatMissing("IsName", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsName), i);
-    jcasType.ll_cas.ll_setBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsName), i, v);}
+  public void setIsName(int i, boolean v) {
+    ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsName)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -409,19 +404,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getSentenceNumber() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_SentenceNumber == null)
-      jcasType.jcas.throwFeatMissing("SentenceNumber", "objects.Sentence");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Sentence_Type)jcasType).casFeatCode_SentenceNumber);}
+  public int getSentenceNumber() { return _getIntValueNc(wrapGetIntCatchException(_FH_SentenceNumber));}
     
   /** setter for SentenceNumber - sets The sentence number within the document. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setSentenceNumber(int v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_SentenceNumber == null)
-      jcasType.jcas.throwFeatMissing("SentenceNumber", "objects.Sentence");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Sentence_Type)jcasType).casFeatCode_SentenceNumber, v);}    
+    _setIntValueNfc(wrapGetIntCatchException(_FH_SentenceNumber), v);
+  }    
+    
    
     
   //*--------------*
@@ -431,19 +423,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getSentence_id() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_sentence_id == null)
-      jcasType.jcas.throwFeatMissing("sentence_id", "objects.Sentence");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Sentence_Type)jcasType).casFeatCode_sentence_id);}
+  public int getSentence_id() { return _getIntValueNc(wrapGetIntCatchException(_FH_sentence_id));}
     
   /** setter for sentence_id - sets Sentence ID from the database 
    * @generated
    * @param v value to set into the feature 
    */
   public void setSentence_id(int v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_sentence_id == null)
-      jcasType.jcas.throwFeatMissing("sentence_id", "objects.Sentence");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Sentence_Type)jcasType).casFeatCode_sentence_id, v);}    
+    _setIntValueNfc(wrapGetIntCatchException(_FH_sentence_id), v);
+  }    
+    
    
     
   //*--------------*
@@ -453,19 +442,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public BooleanArray getIsHospital() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsHospital == null)
-      jcasType.jcas.throwFeatMissing("IsHospital", "objects.Sentence");
-    return (BooleanArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsHospital)));}
+  public BooleanArray getIsHospital() { return (BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsHospital)));}
     
   /** setter for IsHospital - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setIsHospital(BooleanArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsHospital == null)
-      jcasType.jcas.throwFeatMissing("IsHospital", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsHospital, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_IsHospital), v);
+  }    
+    
     
   /** indexed getter for IsHospital - gets an indexed value - 
    * @generated
@@ -473,21 +459,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public boolean getIsHospital(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsHospital == null)
-      jcasType.jcas.throwFeatMissing("IsHospital", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsHospital), i);
-    return jcasType.ll_cas.ll_getBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsHospital), i);}
+     return ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsHospital)))).get(i);} 
 
   /** indexed setter for IsHospital - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setIsHospital(int i, boolean v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsHospital == null)
-      jcasType.jcas.throwFeatMissing("IsHospital", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsHospital), i);
-    jcasType.ll_cas.ll_setBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsHospital), i, v);}
+  public void setIsHospital(int i, boolean v) {
+    ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsHospital)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -497,19 +478,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public BooleanArray getIsPerson() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsPerson == null)
-      jcasType.jcas.throwFeatMissing("IsPerson", "objects.Sentence");
-    return (BooleanArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsPerson)));}
+  public BooleanArray getIsPerson() { return (BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsPerson)));}
     
   /** setter for IsPerson - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setIsPerson(BooleanArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsPerson == null)
-      jcasType.jcas.throwFeatMissing("IsPerson", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsPerson, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_IsPerson), v);
+  }    
+    
     
   /** indexed getter for IsPerson - gets an indexed value - 
    * @generated
@@ -517,21 +495,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public boolean getIsPerson(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsPerson == null)
-      jcasType.jcas.throwFeatMissing("IsPerson", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsPerson), i);
-    return jcasType.ll_cas.ll_getBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsPerson), i);}
+     return ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsPerson)))).get(i);} 
 
   /** indexed setter for IsPerson - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setIsPerson(int i, boolean v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsPerson == null)
-      jcasType.jcas.throwFeatMissing("IsPerson", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsPerson), i);
-    jcasType.ll_cas.ll_setBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsPerson), i, v);}
+  public void setIsPerson(int i, boolean v) {
+    ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsPerson)))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -541,19 +514,16 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public BooleanArray getIsIllness() {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsIllness == null)
-      jcasType.jcas.throwFeatMissing("IsIllness", "objects.Sentence");
-    return (BooleanArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsIllness)));}
+  public BooleanArray getIsIllness() { return (BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsIllness)));}
     
   /** setter for IsIllness - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setIsIllness(BooleanArray v) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsIllness == null)
-      jcasType.jcas.throwFeatMissing("IsIllness", "objects.Sentence");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsIllness, jcasType.ll_cas.ll_getFSRef(v));}    
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_IsIllness), v);
+  }    
+    
     
   /** indexed getter for IsIllness - gets an indexed value - 
    * @generated
@@ -561,21 +531,16 @@ public class Sentence extends Annotation {
    * @return value of the element at index i 
    */
   public boolean getIsIllness(int i) {
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsIllness == null)
-      jcasType.jcas.throwFeatMissing("IsIllness", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsIllness), i);
-    return jcasType.ll_cas.ll_getBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsIllness), i);}
+     return ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsIllness)))).get(i);} 
 
   /** indexed setter for IsIllness - sets an indexed value - 
    * @generated
    * @param i index in the array to set
    * @param v value to set into the array 
    */
-  public void setIsIllness(int i, boolean v) { 
-    if (Sentence_Type.featOkTst && ((Sentence_Type)jcasType).casFeat_IsIllness == null)
-      jcasType.jcas.throwFeatMissing("IsIllness", "objects.Sentence");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsIllness), i);
-    jcasType.ll_cas.ll_setBooleanArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((Sentence_Type)jcasType).casFeatCode_IsIllness), i, v);}
+  public void setIsIllness(int i, boolean v) {
+    ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsIllness)))).set(i, v);
+  }  
   }
 
     

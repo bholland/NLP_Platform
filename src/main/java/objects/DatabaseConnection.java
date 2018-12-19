@@ -1,34 +1,35 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-/* First created by JCasGen Wed Sep 13 17:01:54 EDT 2017 */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Mon Dec 17 16:50:49 EST 2018 */
+
 package objects;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+
 
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Apr 10 14:33:25 EDT 2018
- * XML source: /home/ben/workspace/opennlp_processing/desc/CollectionReaders/FolderReader.xml
+ * Updated by JCasGen Mon Dec 17 16:50:49 EST 2018
+ * XML source: /home/ben/workspace/NLP_Stack/desc/objects/DatabaseConnection.xml
  * @generated */
 public class DatabaseConnection extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "objects.DatabaseConnection";
+  
   /** @generated
    * @ordered 
    */
@@ -45,17 +46,48 @@ public class DatabaseConnection extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_DatabaseServer = "DatabaseServer";
+  public final static String _FeatName_Database = "Database";
+  public final static String _FeatName_UserName = "UserName";
+  public final static String _FeatName_Password = "Password";
+  public final static String _FeatName_Port = "Port";
+  public final static String _FeatName_DatabaseType = "DatabaseType";
+  public final static String _FeatName_LoggingUserId = "LoggingUserId";
+
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_DatabaseServer = TypeSystemImpl.createCallSite(DatabaseConnection.class, "DatabaseServer");
+  private final static MethodHandle _FH_DatabaseServer = _FC_DatabaseServer.dynamicInvoker();
+  private final static CallSite _FC_Database = TypeSystemImpl.createCallSite(DatabaseConnection.class, "Database");
+  private final static MethodHandle _FH_Database = _FC_Database.dynamicInvoker();
+  private final static CallSite _FC_UserName = TypeSystemImpl.createCallSite(DatabaseConnection.class, "UserName");
+  private final static MethodHandle _FH_UserName = _FC_UserName.dynamicInvoker();
+  private final static CallSite _FC_Password = TypeSystemImpl.createCallSite(DatabaseConnection.class, "Password");
+  private final static MethodHandle _FH_Password = _FC_Password.dynamicInvoker();
+  private final static CallSite _FC_Port = TypeSystemImpl.createCallSite(DatabaseConnection.class, "Port");
+  private final static MethodHandle _FH_Port = _FC_Port.dynamicInvoker();
+  private final static CallSite _FC_DatabaseType = TypeSystemImpl.createCallSite(DatabaseConnection.class, "DatabaseType");
+  private final static MethodHandle _FH_DatabaseType = _FC_DatabaseType.dynamicInvoker();
+  private final static CallSite _FC_LoggingUserId = TypeSystemImpl.createCallSite(DatabaseConnection.class, "LoggingUserId");
+  private final static MethodHandle _FH_LoggingUserId = _FC_LoggingUserId.dynamicInvoker();
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected DatabaseConnection() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public DatabaseConnection(int addr, TOP_Type type) {
-    super(addr, type);
+  public DatabaseConnection(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -66,6 +98,7 @@ public class DatabaseConnection extends Annotation {
     super(jcas);
     readObject();   
   } 
+
 
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs
@@ -97,19 +130,16 @@ public class DatabaseConnection extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getDatabaseServer() {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_DatabaseServer == null)
-      jcasType.jcas.throwFeatMissing("DatabaseServer", "objects.DatabaseConnection");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_DatabaseServer);}
+  public String getDatabaseServer() { return _getStringValueNc(wrapGetIntCatchException(_FH_DatabaseServer));}
     
   /** setter for DatabaseServer - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setDatabaseServer(String v) {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_DatabaseServer == null)
-      jcasType.jcas.throwFeatMissing("DatabaseServer", "objects.DatabaseConnection");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_DatabaseServer, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_DatabaseServer), v);
+  }    
+    
    
     
   //*--------------*
@@ -119,19 +149,16 @@ public class DatabaseConnection extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getDatabase() {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_Database == null)
-      jcasType.jcas.throwFeatMissing("Database", "objects.DatabaseConnection");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_Database);}
+  public String getDatabase() { return _getStringValueNc(wrapGetIntCatchException(_FH_Database));}
     
   /** setter for Database - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setDatabase(String v) {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_Database == null)
-      jcasType.jcas.throwFeatMissing("Database", "objects.DatabaseConnection");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_Database, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_Database), v);
+  }    
+    
    
     
   //*--------------*
@@ -141,19 +168,16 @@ public class DatabaseConnection extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getUserName() {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_UserName == null)
-      jcasType.jcas.throwFeatMissing("UserName", "objects.DatabaseConnection");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_UserName);}
+  public String getUserName() { return _getStringValueNc(wrapGetIntCatchException(_FH_UserName));}
     
   /** setter for UserName - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setUserName(String v) {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_UserName == null)
-      jcasType.jcas.throwFeatMissing("UserName", "objects.DatabaseConnection");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_UserName, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_UserName), v);
+  }    
+    
    
     
   //*--------------*
@@ -163,19 +187,16 @@ public class DatabaseConnection extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getPassword() {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_Password == null)
-      jcasType.jcas.throwFeatMissing("Password", "objects.DatabaseConnection");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_Password);}
+  public String getPassword() { return _getStringValueNc(wrapGetIntCatchException(_FH_Password));}
     
   /** setter for Password - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setPassword(String v) {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_Password == null)
-      jcasType.jcas.throwFeatMissing("Password", "objects.DatabaseConnection");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_Password, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_Password), v);
+  }    
+    
    
     
   //*--------------*
@@ -185,19 +206,16 @@ public class DatabaseConnection extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getPort() {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_Port == null)
-      jcasType.jcas.throwFeatMissing("Port", "objects.DatabaseConnection");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_Port);}
+  public String getPort() { return _getStringValueNc(wrapGetIntCatchException(_FH_Port));}
     
   /** setter for Port - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setPort(String v) {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_Port == null)
-      jcasType.jcas.throwFeatMissing("Port", "objects.DatabaseConnection");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_Port, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_Port), v);
+  }    
+    
    
     
   //*--------------*
@@ -207,19 +225,35 @@ public class DatabaseConnection extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getDatabaseType() {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_DatabaseType == null)
-      jcasType.jcas.throwFeatMissing("DatabaseType", "objects.DatabaseConnection");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_DatabaseType);}
+  public String getDatabaseType() { return _getStringValueNc(wrapGetIntCatchException(_FH_DatabaseType));}
     
   /** setter for DatabaseType - sets can either be mysql or pgsql 
    * @generated
    * @param v value to set into the feature 
    */
   public void setDatabaseType(String v) {
-    if (DatabaseConnection_Type.featOkTst && ((DatabaseConnection_Type)jcasType).casFeat_DatabaseType == null)
-      jcasType.jcas.throwFeatMissing("DatabaseType", "objects.DatabaseConnection");
-    jcasType.ll_cas.ll_setStringValue(addr, ((DatabaseConnection_Type)jcasType).casFeatCode_DatabaseType, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_DatabaseType), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: LoggingUserId
+
+  /** getter for LoggingUserId - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getLoggingUserId() { return _getIntValueNc(wrapGetIntCatchException(_FH_LoggingUserId));}
+    
+  /** setter for LoggingUserId - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setLoggingUserId(int v) {
+    _setIntValueNfc(wrapGetIntCatchException(_FH_LoggingUserId), v);
+  }    
+    
   }
 
     

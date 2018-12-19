@@ -1,34 +1,35 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-/* First created by JCasGen Fri Apr 06 14:47:16 EDT 2018 */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Wed Oct 17 18:45:57 EDT 2018 */
+
 package objects;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+
 
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Apr 09 16:41:13 EDT 2018
- * XML source: /home/ben/workspace/opennlp_processing/desc/ReaderObjects/ReaderAnnotator.xml
+ * Updated by JCasGen Wed Oct 17 18:45:57 EDT 2018
+ * XML source: /home/ben/workspace/opennlp_processing/desc/objects/CsvObject.xml
  * @generated */
 public class CsvObject extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "objects.CsvObject";
+  
   /** @generated
    * @ordered 
    */
@@ -45,17 +46,39 @@ public class CsvObject extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
+ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_CsvFile = "CsvFile";
+  public final static String _FeatName_CsvIdColumn = "CsvIdColumn";
+  public final static String _FeatName_CsvTextColumn = "CsvTextColumn";
+  public final static String _FeatName_IsModelData = "IsModelData";
+
+
+  /* Feature Adjusted Offsets */
+  private final static CallSite _FC_CsvFile = TypeSystemImpl.createCallSite(CsvObject.class, "CsvFile");
+  private final static MethodHandle _FH_CsvFile = _FC_CsvFile.dynamicInvoker();
+  private final static CallSite _FC_CsvIdColumn = TypeSystemImpl.createCallSite(CsvObject.class, "CsvIdColumn");
+  private final static MethodHandle _FH_CsvIdColumn = _FC_CsvIdColumn.dynamicInvoker();
+  private final static CallSite _FC_CsvTextColumn = TypeSystemImpl.createCallSite(CsvObject.class, "CsvTextColumn");
+  private final static MethodHandle _FH_CsvTextColumn = _FC_CsvTextColumn.dynamicInvoker();
+  private final static CallSite _FC_IsModelData = TypeSystemImpl.createCallSite(CsvObject.class, "IsModelData");
+  private final static MethodHandle _FH_IsModelData = _FC_IsModelData.dynamicInvoker();
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected CsvObject() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
-   * @param addr low level Feature Structure reference
+   * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public CsvObject(int addr, TOP_Type type) {
-    super(addr, type);
+  public CsvObject(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
@@ -66,6 +89,7 @@ public class CsvObject extends Annotation {
     super(jcas);
     readObject();   
   } 
+
 
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs
@@ -97,19 +121,16 @@ public class CsvObject extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getCsvFile() {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_CsvFile == null)
-      jcasType.jcas.throwFeatMissing("CsvFile", "objects.CsvObject");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((CsvObject_Type)jcasType).casFeatCode_CsvFile);}
+  public String getCsvFile() { return _getStringValueNc(wrapGetIntCatchException(_FH_CsvFile));}
     
   /** setter for CsvFile - sets The CSV file. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setCsvFile(String v) {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_CsvFile == null)
-      jcasType.jcas.throwFeatMissing("CsvFile", "objects.CsvObject");
-    jcasType.ll_cas.ll_setStringValue(addr, ((CsvObject_Type)jcasType).casFeatCode_CsvFile, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_CsvFile), v);
+  }    
+    
    
     
   //*--------------*
@@ -119,19 +140,16 @@ public class CsvObject extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getCsvIdColumn() {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_CsvIdColumn == null)
-      jcasType.jcas.throwFeatMissing("CsvIdColumn", "objects.CsvObject");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((CsvObject_Type)jcasType).casFeatCode_CsvIdColumn);}
+  public String getCsvIdColumn() { return _getStringValueNc(wrapGetIntCatchException(_FH_CsvIdColumn));}
     
   /** setter for CsvIdColumn - sets The ID column for the CSV. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setCsvIdColumn(String v) {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_CsvIdColumn == null)
-      jcasType.jcas.throwFeatMissing("CsvIdColumn", "objects.CsvObject");
-    jcasType.ll_cas.ll_setStringValue(addr, ((CsvObject_Type)jcasType).casFeatCode_CsvIdColumn, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_CsvIdColumn), v);
+  }    
+    
    
     
   //*--------------*
@@ -141,19 +159,16 @@ public class CsvObject extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getCsvTextColumn() {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_CsvTextColumn == null)
-      jcasType.jcas.throwFeatMissing("CsvTextColumn", "objects.CsvObject");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((CsvObject_Type)jcasType).casFeatCode_CsvTextColumn);}
+  public String getCsvTextColumn() { return _getStringValueNc(wrapGetIntCatchException(_FH_CsvTextColumn));}
     
   /** setter for CsvTextColumn - sets The text column for the CSV file. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setCsvTextColumn(String v) {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_CsvTextColumn == null)
-      jcasType.jcas.throwFeatMissing("CsvTextColumn", "objects.CsvObject");
-    jcasType.ll_cas.ll_setStringValue(addr, ((CsvObject_Type)jcasType).casFeatCode_CsvTextColumn, v);}    
+    _setStringValueNfc(wrapGetIntCatchException(_FH_CsvTextColumn), v);
+  }    
+    
    
     
   //*--------------*
@@ -163,19 +178,16 @@ public class CsvObject extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public boolean getIsModelData() {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_IsModelData == null)
-      jcasType.jcas.throwFeatMissing("IsModelData", "objects.CsvObject");
-    return jcasType.ll_cas.ll_getBooleanValue(addr, ((CsvObject_Type)jcasType).casFeatCode_IsModelData);}
+  public boolean getIsModelData() { return _getBooleanValueNc(wrapGetIntCatchException(_FH_IsModelData));}
     
   /** setter for IsModelData - sets If this is csv file with the column contains model data. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setIsModelData(boolean v) {
-    if (CsvObject_Type.featOkTst && ((CsvObject_Type)jcasType).casFeat_IsModelData == null)
-      jcasType.jcas.throwFeatMissing("IsModelData", "objects.CsvObject");
-    jcasType.ll_cas.ll_setBooleanValue(addr, ((CsvObject_Type)jcasType).casFeatCode_IsModelData, v);}    
+    _setBooleanValueNfc(wrapGetIntCatchException(_FH_IsModelData), v);
+  }    
+    
   }
 
     

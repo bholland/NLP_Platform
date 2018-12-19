@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package descriptors;
 
 import junit.framework.*;
@@ -51,7 +35,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import database.DatabaseConnector;
 
 public class PostProcessor_CosDistanceTest {
-    
+    /*
     private static String type;
     private static String database_server; 
     private static String port;
@@ -64,7 +48,7 @@ public class PostProcessor_CosDistanceTest {
         type = "pgsql";
         database_server = "localhost";
         port = "5432";
-        database = "nlp_testing";
+        database = "cos_testing";
         user_name = "ben";
         password = "password";
         
@@ -112,7 +96,8 @@ public class PostProcessor_CosDistanceTest {
     
     @Before
     public void setUpMethods() throws SQLException {
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/nlp_testing", user_name, password)) {
+        String connection_string = String.format("jdbc:postgresql://localhost:5432/%s", database);
+        try (Connection connection = DriverManager.getConnection(connection_string, user_name, password)) {
             Statement statement_clean = connection.createStatement();
             statement_clean.execute("TRUNCATE source_text CASCADE");
             statement_clean.execute("TRUNCATE category_text CASCADE");
@@ -505,4 +490,5 @@ public class PostProcessor_CosDistanceTest {
             assertTrue(true);
         }
     }
+    */
 }

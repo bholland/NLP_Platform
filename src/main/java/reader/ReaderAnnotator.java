@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package reader;
 
 import java.io.IOException;
@@ -139,7 +123,6 @@ public class ReaderAnnotator extends JCasMultiplier_ImplBase {
             DatabaseConnector connector  = getDatabaseConnector(type, database_server, port, database, user_name, password);
             connector.connect();
             Connection connection = connector.getConnection();
-            DatabaseHelper.cleanAllText(connection);
         } catch (ClassNotFoundException | SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -180,9 +163,13 @@ public class ReaderAnnotator extends JCasMultiplier_ImplBase {
             Integer database_text_id = null;
             
             if (text_object.getIsModelData()) {
-                database_text_id = DatabaseHelper.insertCategoryText(connection, text_object.getId(), text_object.getText());
+                /**
+                 * @TODO: fix this to work with inserting categories
+                 * @TODO: allow the true to varry with a column or input value. 
+                 */
+                database_text_id = DatabaseHelper.insertCategoryText(connection, connector.getLoggingUserId(), text_object.getId(), text_object.getText(), null, true);
             } else {
-                database_text_id = DatabaseHelper.insertSourceText(connection, text_object.getId(), text_object.getText());
+                database_text_id = DatabaseHelper.insertDocumentText(connection, connector.getLoggingUserId(), text_object.getId(), text_object.getText());
             }            
     
             String text = text_object.getText();

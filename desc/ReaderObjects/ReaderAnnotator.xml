@@ -77,13 +77,13 @@
     <nameValuePair>
         <name>DatabaseUserName</name>
         <value>
-          <string>ben</string>
+          <string>user</string>
         </value>
       </nameValuePair>
     <nameValuePair>
         <name>Database</name>
         <value>
-          <string>tri_guideme_lda</string>
+          <string>nlp_platform</string>
         </value>
       </nameValuePair>
       <nameValuePair>

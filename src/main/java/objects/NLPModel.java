@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Oct 17 18:47:05 EDT 2018 */
+/* Apache UIMA v3 - First created by JCasGen Tue Oct 23 14:43:15 EDT 2018 */
 
 package objects;
 
@@ -19,22 +19,22 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Oct 17 18:47:05 EDT 2018
- * XML source: /home/ben/workspace/opennlp_processing/desc/objects/PdfObject.xml
+ * Updated by JCasGen Tue Oct 23 14:43:59 EDT 2018
+ * XML source: /home/ben/workspace/opennlp_processing/desc/objects/NLPModel.xml
  * @generated */
-public class PdfObject extends Annotation {
+public class NLPModel extends Annotation {
  
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "objects.PdfObject";
+  public final static String _TypeName = "objects.NLPModel";
   
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(PdfObject.class);
+  public final static int typeIndexID = JCasRegistry.register(NLPModel.class);
   /** @generated
    * @ordered 
    */
@@ -51,27 +51,27 @@ public class PdfObject extends Annotation {
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_PdfFile = "PdfFile";
-  public final static String _FeatName_IsModelData = "IsModelData";
+  public final static String _FeatName_CategoryName = "CategoryName";
+  public final static String _FeatName_BatchNumber = "BatchNumber";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_PdfFile = TypeSystemImpl.createCallSite(PdfObject.class, "PdfFile");
-  private final static MethodHandle _FH_PdfFile = _FC_PdfFile.dynamicInvoker();
-  private final static CallSite _FC_IsModelData = TypeSystemImpl.createCallSite(PdfObject.class, "IsModelData");
-  private final static MethodHandle _FH_IsModelData = _FC_IsModelData.dynamicInvoker();
+  private final static CallSite _FC_CategoryName = TypeSystemImpl.createCallSite(NLPModel.class, "CategoryName");
+  private final static MethodHandle _FH_CategoryName = _FC_CategoryName.dynamicInvoker();
+  private final static CallSite _FC_BatchNumber = TypeSystemImpl.createCallSite(NLPModel.class, "BatchNumber");
+  private final static MethodHandle _FH_BatchNumber = _FC_BatchNumber.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
    * @generated */
-  protected PdfObject() {/* intentionally empty block */}
+  protected NLPModel() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
    * @generated
    * @param casImpl the CAS this Feature Structure belongs to
    * @param type the type of this Feature Structure 
    */
-  public PdfObject(TypeImpl type, CASImpl casImpl) {
+  public NLPModel(TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
     readObject();
   }
@@ -79,7 +79,7 @@ public class PdfObject extends Annotation {
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
-  public PdfObject(JCas jcas) {
+  public NLPModel(JCas jcas) {
     super(jcas);
     readObject();   
   } 
@@ -90,7 +90,7 @@ public class PdfObject extends Annotation {
    * @param begin offset to the begin spot in the SofA
    * @param end offset to the end spot in the SofA 
   */  
-  public PdfObject(JCas jcas, int begin, int end) {
+  public NLPModel(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
@@ -109,39 +109,39 @@ public class PdfObject extends Annotation {
  
     
   //*--------------*
-  //* Feature: PdfFile
+  //* Feature: CategoryName
 
-  /** getter for PdfFile - gets The CSV file.
+  /** getter for CategoryName - gets 
    * @generated
    * @return value of the feature 
    */
-  public String getPdfFile() { return _getStringValueNc(wrapGetIntCatchException(_FH_PdfFile));}
+  public String getCategoryName() { return _getStringValueNc(wrapGetIntCatchException(_FH_CategoryName));}
     
-  /** setter for PdfFile - sets The CSV file. 
+  /** setter for CategoryName - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setPdfFile(String v) {
-    _setStringValueNfc(wrapGetIntCatchException(_FH_PdfFile), v);
+  public void setCategoryName(String v) {
+    _setStringValueNfc(wrapGetIntCatchException(_FH_CategoryName), v);
   }    
     
    
     
   //*--------------*
-  //* Feature: IsModelData
+  //* Feature: BatchNumber
 
-  /** getter for IsModelData - gets If this is csv file with the column contains model data.
+  /** getter for BatchNumber - gets 
    * @generated
    * @return value of the feature 
    */
-  public boolean getIsModelData() { return _getBooleanValueNc(wrapGetIntCatchException(_FH_IsModelData));}
+  public int getBatchNumber() { return _getIntValueNc(wrapGetIntCatchException(_FH_BatchNumber));}
     
-  /** setter for IsModelData - sets If this is csv file with the column contains model data. 
+  /** setter for BatchNumber - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setIsModelData(boolean v) {
-    _setBooleanValueNfc(wrapGetIntCatchException(_FH_IsModelData), v);
+  public void setBatchNumber(int v) {
+    _setIntValueNfc(wrapGetIntCatchException(_FH_BatchNumber), v);
   }    
     
   }

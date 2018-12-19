@@ -146,12 +146,6 @@ The default is 0.</description>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>BaseFolder</name>
-        <value>
-          <string>/home/ben/workspace/tri_guideme</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
         <name>IsRecursive</name>
         <value>
           <boolean>true</boolean>
@@ -218,13 +212,13 @@ The default is 0.</description>
     <nameValuePair>
         <name>DatabaseUserName</name>
         <value>
-          <string>ben</string>
+          <string>user</string>
         </value>
       </nameValuePair>
     <nameValuePair>
         <name>Database</name>
         <value>
-          <string>tri_guideme_lda</string>
+          <string>nlp_platform</string>
         </value>
       </nameValuePair>
       <nameValuePair>
@@ -237,6 +231,12 @@ The default is 0.</description>
         <name>DatabaseType</name>
         <value>
           <string>pgsql</string>
+        </value>
+      </nameValuePair>
+    <nameValuePair>
+        <name>BaseFolder</name>
+        <value>
+          <string>base_folder/</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

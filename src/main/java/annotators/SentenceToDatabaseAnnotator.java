@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package annotators;
 
 import java.io.IOException;
@@ -23,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -34,8 +19,10 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import database.DatabaseConnector;
+import helper.DatabaseHelper;
 import objects.DatabaseConnection;
 import objects.Sentence;
+import objects.UnprocessedText;
 import opennlp.tools.util.Span;
 
 public class SentenceToDatabaseAnnotator extends JCasAnnotator_ImplBase {
@@ -45,42 +32,30 @@ public class SentenceToDatabaseAnnotator extends JCasAnnotator_ImplBase {
         super.initialize(aContext);
     }
     
-    private void InsertSentence(objects.Sentence sentence, DatabaseConnector mysql_connector) throws SQLException {
+    private void InsertSentence(boolean is_document, objects.Sentence sentence, DatabaseConnector connector) throws SQLException {
         Integer unprocessed_text_id = sentence.getDocumentID();
         String sentence_string = sentence.getText_string();
         
-        Connection sql_connection = mysql_connector.getConnection();
-        CallableStatement sp_call = sql_connection.prepareCall("{call insert_sentence(?, ?, ?, ?)}");
-        sp_call.setString(1, sentence_string);
-        sp_call.setInt(2, unprocessed_text_id);
-        sp_call.setInt(3, sentence.getSentenceNumber());
-        sp_call.registerOutParameter(4, Types.INTEGER);
-        boolean has_results = sp_call.execute();
-        Integer sentence_id = sp_call.getInt(4);
+        Connection sql_connection = connector.getConnection();
+        Integer sentence_id = null;
+        if (is_document) {
+            sentence_id = DatabaseHelper.insertDocumentSentence(sql_connection, connector.getLoggingUserId(), sentence_string, unprocessed_text_id, sentence.getSentenceNumber());
+            
+        } else {
+            sentence_id = DatabaseHelper.insertCategorySentence(sql_connection, connector.getLoggingUserId(), sentence_string, unprocessed_text_id, sentence.getSentenceNumber()); 
+        }
         sentence.setSentence_id(sentence_id);
         
-        /*StringArray names = sentence.getNames();
-        if (names.size() == 0) {
-            return;
-        }*/
-        
         StringArray words = sentence.getWords();
+        StringArray stemmed_words = sentence.getLemma_tags();
         StringArray tags = sentence.getPos_tags();
         StringArray chunks = sentence.getChunks();
-        BooleanArray is_names = sentence.getIsName();
         
         for (int x = 0; x < words.size(); x++) {
-            sp_call = sql_connection.prepareCall("{call insert_sentence_metadata(?, ?, ?, ?, ?, ?)}");
-            sp_call.setInt(1, sentence_id);
-            sp_call.setInt(2, x);
-            sp_call.setString(3, words.get(x));
-            sp_call.setString(4, tags.get(x));
-            sp_call.setString(5, chunks.get(x));
-            sp_call.setBoolean(6, is_names.get(x));
-            try {
-                has_results = sp_call.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (is_document) {
+                DatabaseHelper.insertDocumentSentenceMetadata(sql_connection, connector.getLoggingUserId(), sentence_id, x, words.get(x), tags.get(x), chunks.get(x), stemmed_words.get(x));
+            } else {
+                DatabaseHelper.insertCategorySentenceMetadata(sql_connection, connector.getLoggingUserId(), sentence_id, x, words.get(x), tags.get(x), chunks.get(x), stemmed_words.get(x));    
             }
         }
     }
@@ -96,6 +71,10 @@ public class SentenceToDatabaseAnnotator extends JCasAnnotator_ImplBase {
             throw new AnalysisEngineProcessException("A database object was not configured for this CAS" , new Object[] {} );
         }
         
+        FSIterator<Annotation> unprocessed_text_iterator = aJCas.getAnnotationIndex(UnprocessedText.type).iterator();
+        assert (unprocessed_text_iterator.hasNext()) : "No unprocessed texts are assocaited with this CAS object.";
+        UnprocessedText unprocessed_text = (UnprocessedText) unprocessed_text_iterator.next();
+        
         FSIterator<Annotation> sentence_iterator = aJCas.getAnnotationIndex(Sentence.type).iterator();
         assert (sentence_iterator.hasNext()) : "No setences are assocaited with this CAS object.";
         
@@ -103,7 +82,7 @@ public class SentenceToDatabaseAnnotator extends JCasAnnotator_ImplBase {
             connector.connect();
             while (sentence_iterator.hasNext()) {
                 Sentence sentence = (Sentence) sentence_iterator.next();
-                InsertSentence(sentence, connector);
+                InsertSentence(unprocessed_text.getIsDocument(), sentence, connector);
             }
         } catch (SQLException | IOException | ClassNotFoundException e) {
             // TODO Auto-generated catch block

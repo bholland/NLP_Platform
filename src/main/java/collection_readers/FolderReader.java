@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package collection_readers;
 
 import java.io.File;
@@ -51,6 +35,7 @@ import reader.HtmlReader;
 import reader.PdfReader;
 import reader.Reader_ImplBase;
 import reader.TextObject;
+import reader.TextReader;
 
 public class FolderReader extends DatabaseCollectionReader_ImplBase {
     
@@ -63,6 +48,11 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
      * Boolean to walk all subpaths 
      */
     private static final String PARAM_RECURSIVE_FOLDER = "IsRecursive";
+    
+    /**
+     * Boollean to Read PDFs 
+     */
+    private static final String PARAM_READ_TEXT = "ReadText";
     
     /**
      * Boollean to Read PDFs 
@@ -134,6 +124,7 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
     
     private String mBaseFolder = null;
     private Boolean mIsRecursive = null;
+    private Boolean mReadText = null;
     private Boolean mReadPdf = null;
     private Boolean mReadCsv = null;
     private Boolean mReadHtml = null;
@@ -175,6 +166,8 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
                 ret.add(path.toFile());
             } else if (type.equals("text/html") && mReadHtml == true) {
                 ret.add(path.toFile());
+            } else if (type.equals("text/plain") && mReadText == true) {
+                ret.add(path.toFile());
             }
             
             //System.out.println(String.format("File: %s type: %s included: %s", path.toFile().getAbsolutePath(), type, included));
@@ -208,6 +201,10 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
                 HtmlReader html = new HtmlReader();
                 ArrayList<TextObject> text = html.ReadText(file, isModelData, isSourceData);
                 mTextList.addAll(text);
+            } else if (type.equals("text/plain")) {
+                TextReader text_reader = new TextReader();
+                ArrayList<TextObject> text = text_reader.ReadText(file, isModelData, isSourceData);
+                mTextList.addAll(text);
             }
         }
     }
@@ -217,6 +214,7 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
         super.initialize();
         mBaseFolder = (String) getConfigParameterValue(PARAM_BASE_FOLDER);
         mIsRecursive = (Boolean) getConfigParameterValue(PARAM_RECURSIVE_FOLDER);
+        mReadText = (Boolean) getConfigParameterValue(PARAM_READ_TEXT);
         mReadPdf = (Boolean) getConfigParameterValue(PARAM_READ_PDF);
         mReadCsv = (Boolean) getConfigParameterValue(PARAM_READ_CSV);
         mReadHtml = (Boolean) getConfigParameterValue(PARAM_READ_HTML);
@@ -225,15 +223,15 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
         mCsvTextHeaders = (String[]) getConfigParameterValue(PARAM_CSV_TEXT_HEADERS);
         mDataType = (Integer) getConfigParameterValue(PARAM_DATA_TYPE);
         
-        
-        
         mTextListIndex = 0;
         mTextList = new ArrayList<TextObject>();
         
         try (DatabaseConnector connector  = getDatabaseConnector()) {
             connector.connect();
             Connection connection = connector.getConnection();
-            DatabaseHelper.cleanAllText(connection);
+            mLoggingUserId = DatabaseHelper.getLoggingUserNameId(connection, LOGGING_USER);
+            DatabaseHelper.cleanSpellingCorrections(connection, mLoggingUserId);
+            
             
             ArrayList<File> folderList = PopulateFiles(new File(mBaseFolder));
             ReadFiles(folderList);
@@ -265,13 +263,16 @@ public class FolderReader extends DatabaseCollectionReader_ImplBase {
             text.setRawTextString(text_object.getText());
             jcas.setDocumentText(CleanText.Standardize(text_object.getText()));
             
+            /**
+             * @TODO: make this work with the categorical text.  
+             */
             if (text_object.getIsModelData() == true) {
-                database_id = DatabaseHelper.insertCategoryText(connection, text_object.getId(), text_object.getText());
-                text.setIsSource(false);
+                database_id = DatabaseHelper.insertCategoryText(connection, mLoggingUserId, text_object.getId(), text_object.getText(), null, true);
+                text.setIsDocument(false);
             } else {
-                database_id = DatabaseHelper.insertSourceText(connection, text_object.getId(), text_object.getText());
-                text.setIsSource(true);
-            }
+                database_id = DatabaseHelper.insertDocumentText(connection, mLoggingUserId, text_object.getId(), text_object.getText());
+                text.setIsDocument(true);
+            } 
             text.setTextId(database_id);
             text.addToIndexes();
         } catch (SQLException | ClassNotFoundException e) {

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package database;
 
 import java.io.Closeable;
@@ -22,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -33,7 +18,16 @@ public class DatabaseConnector implements Closeable{
     private Connection mSqlConnection;
     private String mConnectionStr;
     private String mUrl;
-    
+    private Integer mLoggingUserId;
+    /**
+     * Database files
+     */
+    public static final String PARAM_DATABASE_SERVER = "DatabaseServer";
+    public static final String PARAM_DATABASE = "Database";
+    public static final String PARAM_USER_NAME = "DatabaseUserName";
+    public static final String PARAM_PASSWORD = "DatabasePassword";
+    public static final String PARAM_PORT = "DatabasePort";
+    public static final String PARAM_DATABASE_TYPE = "DatabaseType";
     
     /**
      * @param type: the type of the database to connect to. This should be either mysql or pgsql. 
@@ -47,7 +41,6 @@ public class DatabaseConnector implements Closeable{
     
     public DatabaseConnector(String type, String database_server, String port, String database, String user_name, String password) throws ClassNotFoundException {
         setStrings(type, database_server, port, database, user_name, password);
-         
     }
     
     public DatabaseConnector(DatabaseConnection database_connection) throws ClassNotFoundException {
@@ -80,7 +73,7 @@ public class DatabaseConnector implements Closeable{
     }
     
     public Connection getConnection() {
-        return mSqlConnection;
+    	return mSqlConnection;
     }
     
     public String getConenctionString() {
@@ -100,6 +93,17 @@ public class DatabaseConnector implements Closeable{
         }
         return null;
     }
+    
+    static public DatabaseConnector GetDatabaseConnection(UimaContext context) throws ClassNotFoundException {
+        String database_server = (String) context.getConfigParameterValue(PARAM_DATABASE_SERVER);
+        String database = (String) context.getConfigParameterValue(PARAM_DATABASE);
+        String user_name = (String) context.getConfigParameterValue(PARAM_USER_NAME);
+        String password = (String) context.getConfigParameterValue(PARAM_PASSWORD);
+        String port = (String) context.getConfigParameterValue(PARAM_PORT);
+        String type = (String) context.getConfigParameterValue(PARAM_DATABASE_TYPE);
+        return new DatabaseConnector(type, database_server, port, database, user_name, password);
+        
+    }
 
     @Override
     public void close() throws IOException {
@@ -111,6 +115,13 @@ public class DatabaseConnector implements Closeable{
                 e.printStackTrace();
             }
         }
-        
+    }
+    
+    public Integer getLoggingUserId() {
+    	return mLoggingUserId;
+    }
+    
+    public void setLoggingUserId(Integer logging_user_id) {
+    	mLoggingUserId = logging_user_id;
     }
 }

@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2018 by Benedict M. Holland <benedict.m.holland@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package descriptors;
 
 import java.io.IOException;
@@ -31,6 +15,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 
 import database.DatabaseConnector;
+import helper.DatabaseHelper;
 import objects.DatabaseConnection;
 
 /**
@@ -84,6 +69,7 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
      */
     public static final String PARAM_MODEL_FILE_NAME = "ModelFileName";
     
+    
     /**
      * The table to use for the model generation. The stored procedure that 
      * we use to create this table is defined below. I called it create_data_table
@@ -133,13 +119,20 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
      */
     public static final String PARAM_DATA_TABLE = "DataTable";
     
-    private String mDatabaseServer;
-    private String mDatabase;
-    private String mUserName;
-    private String mPassword;
+    /**
+     * This is the user that exists in the users table that will log
+     * all events from the stack. This user will also have the admin role.  
+     */
+    protected static final String LOGGING_USER = "nlp_stack";
+    protected Integer mLoggingUserId;
     
-    private String mPort;
-    private String mType;
+    protected String mDatabaseServer;
+    protected String mDatabase;
+    protected String mUserName;
+    protected String mPassword;
+    
+    protected String mPort;
+    protected String mType;
     
     protected Boolean mRecreateModel;
     protected String mModelFileName;
@@ -160,10 +153,14 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
             // TODO Auto-generated catch block
             e.printStackTrace();
             throw new ResourceInitializationException();
-        }
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new ResourceInitializationException();
+		}
     }
     
-    public DatabaseConnector getDatabaseConnector() throws SQLException, ClassNotFoundException {
+    public DatabaseConnector getDatabaseConnector() throws SQLException, ClassNotFoundException, IOException {
         String database_server = (String) getConfigParameterValue(PARAM_DATABASE_SERVER);
         String database = (String) getConfigParameterValue(PARAM_DATABASE);
         String user_name = (String) getConfigParameterValue(PARAM_DATABASE_USER_NAME);
@@ -178,8 +175,21 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         return getDatabaseConnector(type, database_server, port, database, user_name, password);
     }
     
+    /**
+     * @todo: unit test this. 
+     * @param type
+     * @param database_server
+     * @param port
+     * @param database
+     * @param user_name
+     * @param password
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws IOException
+     */
     public DatabaseConnector getDatabaseConnector(String type, String database_server, 
-            String port, String database, String user_name, String password) throws SQLException, ClassNotFoundException {
+            String port, String database, String user_name, String password) throws SQLException, ClassNotFoundException, IOException {
         
         mDatabaseServer = database_server;
         mDatabase = database;
@@ -206,7 +216,16 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         else if (mPort.trim().equals("5432")) {
             mType = "pgsql";
         }
-        return new DatabaseConnector(mType, mDatabaseServer, mPort, mDatabase, mUserName, mPassword);
+        
+        DatabaseConnector connector = new DatabaseConnector(mType, mDatabaseServer, mPort, mDatabase, mUserName, mPassword);	
+        if (mLoggingUserId == null) {
+        	connector.connect();
+        	Connection connection = connector.getConnection();
+        	mLoggingUserId = DatabaseHelper.getLoggingUserNameId(connection, LOGGING_USER);
+        	connector.setLoggingUserId(mLoggingUserId);
+        	connection.close();
+        }
+        return connector;
     }
     
     public void setRecreateModel(Boolean recreational_model) {
@@ -249,6 +268,7 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         db_conn.setUserName(mUserName);
         db_conn.setPassword(mPassword);
         db_conn.setDatabaseType(mType);
+        db_conn.setLoggingUserId(mLoggingUserId);
         db_conn.addToIndexes();
         return jcas;
     }
