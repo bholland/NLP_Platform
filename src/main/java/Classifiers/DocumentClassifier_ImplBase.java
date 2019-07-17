@@ -12,25 +12,29 @@ import opennlp.tools.doccat.DoccatFactory;
 import opennlp.tools.doccat.DoccatModel;
 import opennlp.tools.doccat.DocumentCategorizerME;
 import opennlp.tools.doccat.DocumentSample;
+import opennlp.tools.doccat.FeatureGenerator;
+import opennlp.tools.doccat.NGramFeatureGenerator;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.TrainingParameters;
 import opennlp.uima.doccat.DocumentCategorizer;
 import opennlp.uima.doccat.DocumentCategorizerTrainer;
 
-public class DocumentClassifier implements ObjectStream<DocumentSample> {
+public abstract class DocumentClassifier_ImplBase implements ObjectStream<DocumentSample> {
     
-    private ArrayList<DocumentSample> mDocumentSampleList;
-    private Integer mDocumentSampleListIdx;
+    protected ArrayList<DocumentSample> documentSampleList;
+    protected Integer documentSampleListIdx;
     
-    private HashMap<Integer, String> mCategoryMap;
-    private HashMap<Integer, ArrayList<Integer>> mCategoryTextMap;
-    private HashMap<Integer, String[]> mTextTokens;
+    protected HashMap<Integer, String> categoryMap;
+    protected HashMap<Integer, ArrayList<Integer>> categoryTextMap;
+    protected HashMap<Integer, String[]> textTokens;
+    
+    protected Integer activeCategoryId;
     
     
-    private Connection mSqlConnection;
+    protected Connection mSqlConnection;
     
     public HashMap<Integer, String> GetCategories() {
-        return mCategoryMap;
+        return categoryMap;
     }
     
     public void Setup() throws SQLException {
@@ -51,15 +55,15 @@ public class DocumentClassifier implements ObjectStream<DocumentSample> {
             //any key value in mCategoryMap denotes a category_id - text_id inclusive mapping
             //Leave out any category_id - text_id pairings that are not in the category
             //but are still in the training data. It will get added to the is_not model category. 
-            if (!mCategoryMap.containsKey(category_id)) {
-                mCategoryMap.put(category_id, category_name);
+            if (!categoryMap.containsKey(category_id)) {
+                categoryMap.put(category_id, category_name);
             }
            
-            if (!mCategoryTextMap.containsKey(category_id)) {
-                mCategoryTextMap.put(category_id, new ArrayList<Integer>());
+            if (!categoryTextMap.containsKey(category_id)) {
+                categoryTextMap.put(category_id, new ArrayList<Integer>());
             }
             //HERE, figure out how to deal with the is_in_category == false. 
-            ArrayList<Integer> text_id_list = mCategoryTextMap.get(category_id);
+            ArrayList<Integer> text_id_list = categoryTextMap.get(category_id);
             text_id_list.add(text_id);
             
             ArrayList<String> tokens_list = new ArrayList<String>();
@@ -77,74 +81,80 @@ public class DocumentClassifier implements ObjectStream<DocumentSample> {
             
             String[] tokens = tokens_list.toArray(new String[0]);
             
-            if (!mTextTokens.containsKey(text_id)) {
-                mTextTokens.put(text_id, tokens);
+            if (!textTokens.containsKey(text_id)) {
+                textTokens.put(text_id, tokens);
             }
         }
     }
     
-    public DocumentClassifier(Connection sql_connection) throws SQLException {
-        mDocumentSampleList = new ArrayList<DocumentSample>();
-        mDocumentSampleListIdx = 0;
+    public DocumentClassifier_ImplBase(Connection sql_connection) throws SQLException {
+        documentSampleList = new ArrayList<DocumentSample>();
+        documentSampleListIdx = 0;
         
-        mCategoryMap = new HashMap<Integer, String>();
-        mTextTokens = new HashMap<Integer, String[]>();
+        categoryMap = new HashMap<Integer, String>();
+        textTokens = new HashMap<Integer, String[]>();
         
-        mCategoryTextMap = new HashMap<Integer, ArrayList<Integer>>();
+        categoryTextMap = new HashMap<Integer, ArrayList<Integer>>();
         
         mSqlConnection = sql_connection;
+        
+        documentSampleList = new ArrayList<DocumentSample>();
+        documentSampleListIdx = 0;
+        
+        activeCategoryId = null;
         
         Setup();
     }
 
     @Override
     public DocumentSample read() throws IOException {
-        if (mDocumentSampleListIdx == mDocumentSampleList.size()) {
+        if (documentSampleListIdx == documentSampleList.size()) {
             return null;
         } else {
-            DocumentSample ret = mDocumentSampleList.get(mDocumentSampleListIdx);
-            mDocumentSampleListIdx++;
+            DocumentSample ret = documentSampleList.get(documentSampleListIdx);
+            documentSampleListIdx++;
             return ret;
         }
     }
     
     @Override
     public void reset() throws IOException, UnsupportedOperationException {
-        mDocumentSampleListIdx = 0;
+        documentSampleListIdx = 0;
     }
     
     @Override
     public void close() throws IOException {
-        mDocumentSampleList = null;
-        mDocumentSampleListIdx = null;
+        documentSampleList = null;
+        documentSampleListIdx = null;
     }
     
-    public void SetupTrainer(Integer category_id) {
-        mDocumentSampleList = new ArrayList<DocumentSample>();
-        mDocumentSampleListIdx = 0;
+    /**
+     * This is really the only class that the user need to set up. 
+     * This will set up the document classifier data for the maxent model.
+     * This can basically be anything but it must create and populate 
+     * documentSampleList and documentSampleListIdx.
+     * 
+     * This function sets up and defines the ObjectStream<DocumentStample>
+     * portion of this object that gets passed to the DocumentCategorizerME.train() 
+     * function.
+     */
+    public abstract void SetupTrainer();
+    
+    /**
+     * @param category_id: The category_id to use
+     * For models that use a specific category_id, use this to set it up.  
+     */
+    public abstract void SetActiveCategoryId(Integer category_id);
         
-        /**
-         * debugging only
-        for (Integer key: mCategoryTextMap.keySet()) {
-            System.out.println(String.format("%s: %s", key, mCategoryTextMap.get(key).size()));
-        }
-        */
-        ArrayList<Integer> text_ids_in_category = mCategoryTextMap.get(category_id);
-        for (Integer text_id: mTextTokens.keySet()) {
-            if (text_ids_in_category.contains(text_id)) {
-                mDocumentSampleList.add(new DocumentSample(String.format("is_%s", category_id), mTextTokens.get(text_id)));
-            } else {
-                mDocumentSampleList.add(new DocumentSample(String.format("is_not_%s", category_id), mTextTokens.get(text_id)));
-            }
-        }
-        
-    }
     
     public DoccatModel train(Integer category_id) throws IOException {
         TrainingParameters tp = TrainingParameters.defaultParams();
         tp.put(TrainingParameters.CUTOFF_PARAM, 1);
         tp.put(TrainingParameters.ITERATIONS_PARAM, 500);
-        DoccatModel model = DocumentCategorizerME.train("en", this, tp, new DoccatFactory());
+        //This is where you create custom features to calculate as part of the model. 
+        //Think through experimenting with this. It can get fairly intense. 
+        FeatureGenerator[] features = {new NGramFeatureGenerator(1, 1), new NGramFeatureGenerator(2, 3)};
+        DoccatModel model = DocumentCategorizerME.train("en", this, tp, new DoccatFactory(features));
         return model;
     }
 }

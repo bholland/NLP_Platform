@@ -124,6 +124,7 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
      * all events from the stack. This user will also have the admin role.  
      */
     protected static final String LOGGING_USER = "nlp_stack";
+    protected static final String LOGGING_USER_EMAIL = "nlp_stack@nlp_stack.com";
     protected Integer mLoggingUserId;
     
     protected String mDatabaseServer;
@@ -222,6 +223,10 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         	connector.connect();
         	Connection connection = connector.getConnection();
         	mLoggingUserId = DatabaseHelper.getLoggingUserNameId(connection, LOGGING_USER);
+        	if (mLoggingUserId == null) {
+        		DatabaseHelper.addNewUser(connection, null, LOGGING_USER, LOGGING_USER_EMAIL, "nlp logger", "nlp logger");
+        		mLoggingUserId = DatabaseHelper.getLoggingUserNameId(connection, LOGGING_USER);
+        	}
         	connector.setLoggingUserId(mLoggingUserId);
         	connection.close();
         }

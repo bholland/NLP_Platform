@@ -13,7 +13,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import Classifiers.DocumentClassifier;
+import Classifiers.DocumentClassifier_Binary;
 import database.DatabaseConnector;
 import helper.DatabaseHelper;
 import objects.DatabaseConnection;
@@ -37,10 +37,11 @@ public class NLPModelTraining extends JCasAnnotator_ImplBase {
         try (DatabaseConnector connector = new DatabaseConnector(database_connection)) {
         	connector.connect();
             Connection sql_connection = connector.getConnection();
-            DocumentClassifier classifier = new DocumentClassifier(sql_connection);
+            DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection);
             
             Integer category_id = DatabaseHelper.getCategoryId(sql_connection, connector.getLoggingUserId(), nlp_model.getCategoryName());
-            classifier.SetupTrainer(category_id);
+            classifier.SetActiveCategoryId(category_id);
+            classifier.SetupTrainer();
             DoccatModel model = classifier.train(category_id);
             
             /*OutputStream modelOut = null;

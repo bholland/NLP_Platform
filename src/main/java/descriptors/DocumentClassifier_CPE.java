@@ -22,7 +22,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
-import Classifiers.DocumentClassifier;
+import Classifiers.DocumentClassifier_Binary;
 import database.DatabaseConnector;
 import helper.DatabaseHelper;
 import objects.DatabaseConnection;
@@ -47,7 +47,7 @@ public class DocumentClassifier_CPE extends DatabaseCollectionReader_ImplBase {
             sql_connector.connect();
             Connection sql_connection = sql_connector.getConnection();
             mLoggingUserId = DatabaseHelper.getLoggingUserNameId(sql_connection, LOGGING_USER);
-            try (DocumentClassifier classifier = new DocumentClassifier(sql_connection)) {
+            try (DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection, mLoggingUserId)) {
                 mCategories = classifier.GetCategories();
                 mKeys = mCategories.keySet();
                 mKeysIter = mKeys.iterator();

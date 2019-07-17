@@ -15,7 +15,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import Classifiers.DocumentClassifier;
+import Classifiers.DocumentClassifier_Binary;
 import database.DatabaseConnector;
 import helper.DatabaseHelper;
 import objects.DatabaseConnection;
@@ -41,7 +41,7 @@ public class NLPModelTagging extends JCasAnnotator_ImplBase {
         try (DatabaseConnector connector = new DatabaseConnector(mDatabaseConnection)) {
         	connector.connect();
             Connection sql_connection = connector.getConnection();
-            DocumentClassifier classifier = new DocumentClassifier(sql_connection);
+            DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection);
             
             Integer category_id = DatabaseHelper.getCategoryId(sql_connection, connector.getLoggingUserId(), nlp_model.getCategoryName());
             Integer batch_number = nlp_model.getBatchNumber();
