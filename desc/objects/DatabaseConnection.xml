@@ -1,51 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <name>DatabaseConnection</name>
-    <description>This object maintains all of the database connection variables. The database connection cannot be maintained between parts though this object can always create the database connection.</description>
-    <version>1.0</version>
-    <vendor>Abt Associates</vendor>
+        
+  
+  <name>DatabaseConnection</name>
+        
+  
+  <description>This object maintains all of the database connection variables. The database connection cannot be maintained between parts though this object can always create the database connection.</description>
+        
+  
+  <version>1.0</version>
+        
+  
+  <vendor>Abt Associates</vendor>
+      
+  
   <types>
+            
+    
     <typeDescription>
+                  
+      
       <name>objects.DatabaseConnection</name>
+                  
+      
       <description/>
+                  
+      
       <supertypeName>uima.tcas.Annotation</supertypeName>
+                  
+      
       <features>
+                        
+        
         <featureDescription>
+                              
+          
           <name>DatabaseServer</name>
+                              
+          
           <description/>
+                              
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                            
+        
         </featureDescription>
+                        
+        
         <featureDescription>
+                              
+          
           <name>Database</name>
+                              
+          
           <description/>
+                              
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                            
+        
         </featureDescription>
+                        
+        
         <featureDescription>
+                              
+          
           <name>UserName</name>
+                              
+          
           <description/>
+                              
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                            
+        
         </featureDescription>
+                        
+        
         <featureDescription>
+                              
+          
           <name>Password</name>
+                              
+          
           <description/>
+                              
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                            
+        
         </featureDescription>
+                        
+        
         <featureDescription>
+                              
+          
           <name>Port</name>
+                              
+          
           <description/>
+                              
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                            
+        
         </featureDescription>
-      <featureDescription>
+                      
+        
+        <featureDescription>
+                              
+          
           <name>DatabaseType</name>
+                              
+          
           <description>can either be mysql or pgsql</description>
+                              
+          
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                            
+        
         </featureDescription>
-      <featureDescription>
+                      
+        
+        <featureDescription>
+                              
+          
           <name>LoggingUserId</name>
+                              
+          
           <description/>
+                              
+          
           <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                            
+        
         </featureDescription>
+                      
+        
+        <featureDescription>
+                              
+          
+          <name>UseJobQueue</name>
+                              
+          
+          <description>Use Job Queue can be 1 of 3 valid values. 
+0: Do not use the job queue.
+1: Run this as an insert job
+2: Run this as a processing job</description>
+                              
+          
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                            
+        
+        </featureDescription>
+              
       </features>
+                
+    
     </typeDescription>
+          
+  
   </types>
+    
+
 </typeSystemDescription>

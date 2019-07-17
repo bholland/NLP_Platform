@@ -82,6 +82,11 @@
           <rangeTypeName>uima.cas.BooleanArray</rangeTypeName>
           <multipleReferencesAllowed>false</multipleReferencesAllowed>
         </featureDescription>
+      <featureDescription>
+          <name>IsRawSentence</name>
+          <description/>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

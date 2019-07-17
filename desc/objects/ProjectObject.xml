@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
       
-  <name>CsvObject</name>
+  <name>ProjectObject</name>
       
-  <description>The object representing CSV file.</description>
+  <description/>
       
   <version>1.0</version>
       
@@ -13,7 +13,7 @@
         
     <typeDescription>
             
-      <name>objects.CsvObject</name>
+      <name>objects.ProjectObject</name>
             
       <description/>
             
@@ -23,19 +23,9 @@
                 
         <featureDescription>
                     
-          <name>CsvFile</name>
+          <name>Name</name>
                     
-          <description>The CSV file.</description>
-                    
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-                  
-        </featureDescription>
-                
-        <featureDescription>
-                    
-          <name>CsvIdColumn</name>
-                    
-          <description>The ID column for the CSV.</description>
+          <description>The project name.</description>
                     
           <rangeTypeName>uima.cas.String</rangeTypeName>
                   
@@ -43,19 +33,9 @@
                 
         <featureDescription>
                     
-          <name>CsvTextColumn</name>
+          <name>ProjectType</name>
                     
-          <description>The text column for the CSV file.</description>
-                    
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-                  
-        </featureDescription>
-        
-        <featureDescription>
-                    
-          <name>CsvCategoryColumn</name>
-                    
-          <description>The category column for the CSV file.</description>
+          <description>The project type. Currently, the only supported type is dual_validation. </description>
                     
           <rangeTypeName>uima.cas.String</rangeTypeName>
                   
@@ -63,18 +43,27 @@
                 
         <featureDescription>
                     
-          <name>IsModelData</name>
+          <name>CheckoutTimeout</name>
                     
-          <description>If this is csv file with the column contains model data.</description>
+          <description>The value of the checkout timeout. </description>
                     
-          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                  
+        </featureDescription>
+                
+        <featureDescription>
+                    
+          <name>ProjectOwner</name>
+                    
+          <description>This will specify the user name of the project owner. If this user does not exist (case senseative), it will be created and assigned as the owner. </description>
+                    
+          <rangeTypeName>uima.cas.String</rangeTypeName>
                   
         </featureDescription>
               
       </features>
           
     </typeDescription>
-      
   </types>
   
 </typeSystemDescription>

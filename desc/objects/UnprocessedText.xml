@@ -1,36 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <name>UnprocessedText</name>
-    <description>This is unprocessed text for the UIMA stack. This should contain raw document text, event if the jCas contains modified text. This should always provide access to the orginal document text.</description>
-    <version>1.0</version>
-    <vendor>Abt Associates</vendor>
+      
+  <name>UnprocessedText</name>
+      
+  <description>This is unprocessed text for the UIMA stack. This should contain raw document text, event if the jCas contains modified text. This should always provide access to the orginal document text.</description>
+      
+  <version>1.0</version>
+      
+  <vendor>Abt Associates</vendor>
+    
   <types>
+        
     <typeDescription>
+            
       <name>objects.UnprocessedText</name>
+            
       <description/>
+            
       <supertypeName>uima.tcas.Annotation</supertypeName>
+            
       <features>
+                
         <featureDescription>
+                    
           <name>RawTextString</name>
+                    
           <description>This is the raw text of the input document.</description>
+                    
           <rangeTypeName>uima.cas.String</rangeTypeName>
+                  
         </featureDescription>
-      <featureDescription>
+              
+        <featureDescription>
+                    
           <name>TextId</name>
+                    
           <description>Text id from the database.</description>
+                    
           <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                  
         </featureDescription>
-      <featureDescription>
+              
+        <featureDescription>
+                    
           <name>NumTokens</name>
+                    
           <description/>
+                    
           <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                  
         </featureDescription>
-      <featureDescription>
+              
+        <featureDescription>
+                    
           <name>IsDocument</name>
+                    
           <description>Is this is a document to categorize or is this training material?</description>
+                    
           <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+                  
+        </featureDescription>
+              
+        <featureDescription>
+                    
+          <name>JobQueueId</name>
+                    
+          <description/>
+                    
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                  
         </featureDescription>
       </features>
+          
     </typeDescription>
+      
   </types>
+  
 </typeSystemDescription>
