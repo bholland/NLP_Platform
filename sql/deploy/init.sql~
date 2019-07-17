@@ -1,0 +1,7 @@
+-- Deploy nlp_schema:init to pg
+
+BEGIN;
+
+-- XXX Add DDLs here.
+
+COMMIT;

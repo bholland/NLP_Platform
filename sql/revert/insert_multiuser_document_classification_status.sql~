@@ -1,0 +1,7 @@
+-- Revert nlp_schema:insert_multiuser_document_classification_status from pg
+
+BEGIN;
+
+drop FUNCTION public.insert_multiuser_document_classification_status;
+
+COMMIT;

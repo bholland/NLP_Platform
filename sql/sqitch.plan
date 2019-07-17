@@ -1,0 +1,11 @@
+%syntax-version=1.0.0
+%project=nlp_schema
+
+init 2019-07-02T21:05:42Z Ben Holland <ben_holland@abtassoc.com> # initial schema commit
+@v1 2019-07-02T21:06:48Z Ben Holland <ben_holland@abtassoc.com> # tagging the intial deployment.
+
+add_project_name 2019-07-08T19:18:48Z Ben Holland <ben_holland@abtassoc.com> # Add a the name column to the project and fix stored procedures.
+alter_document_classification_status 2019-07-08T20:37:33Z Ben Holland <ben_holland@abtassoc.com> # alter the document classification_status stored procedure.
+
+remove_select_document_classification_status 2019-07-08T21:36:01Z Ben Holland <ben_holland@abtassoc.com> # renaming to multiuser.
+clean_projects_fix 2019-07-08T22:50:42Z Ben Holland <ben_holland@abtassoc.com> # adding truncation to tables.

@@ -1,3 +1,7 @@
+-- Deploy nlp_schema:init to pg
+
+BEGIN;
+
 --
 -- PostgreSQL database dump
 --
@@ -28,22 +32,6 @@ ALTER SCHEMA nlp_template OWNER TO ben;
 --
 
 COMMENT ON SCHEMA nlp_template IS 'This is the NLP database schema.';
-
-
---
--- Name: sqitch; Type: SCHEMA; Schema: -; Owner: ben
---
-
-CREATE SCHEMA sqitch;
-
-
-ALTER SCHEMA sqitch OWNER TO ben;
-
---
--- Name: SCHEMA sqitch; Type: COMMENT; Schema: -; Owner: ben
---
-
-COMMENT ON SCHEMA sqitch IS 'Sqitch database deployment metadata v1.0.';
 
 
 --
@@ -167,7 +155,6 @@ begin
 perform log_message(in_user_id, 'clean_projects', null);
 
 truncate table projects;
-truncate table multiuser_document_classification_status_labels cascade;
 
 end;
 $$;
@@ -670,6 +657,55 @@ $$;
 ALTER FUNCTION public.insert_category_token_count(in_user_id integer, in_category_text_id integer, in_processed_text text, in_num_tokens integer) OWNER TO ben;
 
 --
+-- Name: insert_document_classification_status(integer, text, bit, bit); Type: FUNCTION; Schema: public; Owner: ben
+--
+
+CREATE FUNCTION public.insert_document_classification_status(in_user_id integer, in_status text, in_is_ready_for_review bit, in_is_requires_admin bit) RETURNS TABLE(out_id integer)
+    LANGUAGE plpgsql
+    AS $$
+declare new_id integer;
+begin
+
+perform log_message(in_user_id, 'insert_document_classification_status', null);
+
+insert into document_classification_status
+(status_text, is_ready_for_review, is_requires_admin)
+values
+(in_status, in_is_ready_for_review, in_is_requires_admin)
+returning id into new_id;
+
+return query
+select new_id;
+
+end;
+$$;
+
+
+ALTER FUNCTION public.insert_document_classification_status(in_user_id integer, in_status text, in_is_ready_for_review bit, in_is_requires_admin bit) OWNER TO ben;
+
+--
+-- Name: insert_document_classification_status_next(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: ben
+--
+
+CREATE FUNCTION public.insert_document_classification_status_next(in_user_id integer, in_document_classification_status_id integer, in_next_id integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+declare new_id integer;
+begin
+
+perform log_message(in_user_id, 'insert_document_classification_status_next', null);
+
+update document_classification_status
+set next_id = in_next_id
+where document_classification_status.id = in_document_classification_status_id;
+
+end;
+$$;
+
+
+ALTER FUNCTION public.insert_document_classification_status_next(in_user_id integer, in_document_classification_status_id integer, in_next_id integer) OWNER TO ben;
+
+--
 -- Name: insert_document_sentence(integer, text, integer, integer); Type: FUNCTION; Schema: public; Owner: ben
 --
 
@@ -870,55 +906,6 @@ $$;
 ALTER FUNCTION public.insert_job_type(in_user_id integer, in_job_type_label character varying) OWNER TO ben;
 
 --
--- Name: insert_multiuser_document_classification_status_labels(integer, text, boolean, boolean); Type: FUNCTION; Schema: public; Owner: ben
---
-
-CREATE FUNCTION public.insert_multiuser_document_classification_status_labels(in_user_id integer, in_status text, in_is_ready_for_review boolean, in_is_initialize boolean) RETURNS TABLE(out_id integer)
-    LANGUAGE plpgsql
-    AS $$
-declare new_id integer;
-begin
-
-perform log_message(in_user_id, 'insert_multiuser_document_classification_status_labels', null);
-
-insert into multiuser_document_classification_status_labels
-(status_text, is_ready_for_review, is_initialize)
-values
-(in_status, in_is_ready_for_review, in_is_initialize)
-returning id into new_id;
-
-return query
-select new_id;
-
-end;
-$$;
-
-
-ALTER FUNCTION public.insert_multiuser_document_classification_status_labels(in_user_id integer, in_status text, in_is_ready_for_review boolean, in_is_initialize boolean) OWNER TO ben;
-
---
--- Name: insert_multiuser_document_classification_status_next(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: ben
---
-
-CREATE FUNCTION public.insert_multiuser_document_classification_status_next(in_user_id integer, in_multiuser_document_classification_status_labels_id integer, in_next_id integer) RETURNS void
-    LANGUAGE plpgsql
-    AS $$
-declare new_id integer;
-begin
-
-perform log_message(in_user_id, 'insert_document_classification_status_next', null);
-
-update multiuser_document_classification_status_labels
-set next_id = in_next_id
-where multiuser_document_classification_status_labels.id = in_multiuser_document_classification_status_labels_id;
-
-end;
-$$;
-
-
-ALTER FUNCTION public.insert_multiuser_document_classification_status_next(in_user_id integer, in_multiuser_document_classification_status_labels_id integer, in_next_id integer) OWNER TO ben;
-
---
 -- Name: insert_new_job(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: ben
 --
 
@@ -996,10 +983,10 @@ $$;
 ALTER FUNCTION public.insert_new_user(in_user_name text, in_email text, in_first_name text, in_last_name text) OWNER TO ben;
 
 --
--- Name: insert_project(character varying, integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: ben
+-- Name: insert_project(integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: ben
 --
 
-CREATE FUNCTION public.insert_project(in_name character varying, in_user_id integer, in_owner_user_id integer, in_ready_for_review_id integer, in_checkout_timeout integer DEFAULT 600) RETURNS TABLE(out_id integer)
+CREATE FUNCTION public.insert_project(in_user_id integer, in_owner_user_id integer, in_ready_for_review_id integer, in_checkout_timeout integer DEFAULT 600) RETURNS TABLE(out_id integer)
     LANGUAGE plpgsql
     AS $$
 declare new_id integer;
@@ -1011,9 +998,9 @@ perform log_message(in_user_id, 'insert_project', null);
 truncate table projects;
 
 insert into projects
-("name", owner_user_id, ready_for_review_id, checkout_timeout)
+(owner_user_id, ready_for_review_id, checkout_timeout)
 values
-(in_name, in_owner_user_id, in_ready_for_review_id, in_checkout_timeout)
+(in_owner_user_id, in_ready_for_review_id, in_checkout_timeout)
 returning id into new_id;
 
 return query
@@ -1023,7 +1010,7 @@ end;
 $$;
 
 
-ALTER FUNCTION public.insert_project(in_name character varying, in_user_id integer, in_owner_user_id integer, in_ready_for_review_id integer, in_checkout_timeout integer) OWNER TO ben;
+ALTER FUNCTION public.insert_project(in_user_id integer, in_owner_user_id integer, in_ready_for_review_id integer, in_checkout_timeout integer) OWNER TO ben;
 
 --
 -- Name: insert_sorted_index(integer, integer, integer[], integer[], double precision[]); Type: FUNCTION; Schema: public; Owner: ben
@@ -1794,6 +1781,28 @@ $$;
 ALTER FUNCTION public.select_category_text_tokens(in_user_id integer, in_category_text_id integer) OWNER TO ben;
 
 --
+-- Name: select_document_classification_status(integer); Type: FUNCTION; Schema: public; Owner: ben
+--
+
+CREATE FUNCTION public.select_document_classification_status(in_user_id integer) RETURNS TABLE(out_id integer, out_status_text text, out_next_id integer, out_is_ready_for_review bit, out_is_requires_admin bit)
+    LANGUAGE plpgsql
+    AS $$
+declare new_id integer;
+begin
+
+perform log_message(in_user_id, 'select_document_classification_status', null);
+
+return query
+select dcs.id, dcs.status_text, dcs.next_id, dcs.is_ready_for_review, dcs.is_requires_admin
+from document_classification_status dcs;
+
+end;
+$$;
+
+
+ALTER FUNCTION public.select_document_classification_status(in_user_id integer) OWNER TO ben;
+
+--
 -- Name: select_document_text(integer); Type: FUNCTION; Schema: public; Owner: ben
 --
 
@@ -2002,28 +2011,6 @@ $$;
 
 
 ALTER FUNCTION public.select_job_types_list(in_user_id integer) OWNER TO ben;
-
---
--- Name: select_multiuser_document_classification_status_labels(integer); Type: FUNCTION; Schema: public; Owner: ben
---
-
-CREATE FUNCTION public.select_multiuser_document_classification_status_labels(in_user_id integer) RETURNS TABLE(out_id integer, out_status_text text, out_next_id integer, out_is_ready_for_review boolean, out_is_initialize boolean)
-    LANGUAGE plpgsql
-    AS $$
-declare new_id integer;
-begin
-
-perform log_message(in_user_id, 'select_multiuser_document_classification_status_labels', null);
-
-return query
-select mdcsl.id, mdcsl.status_text, mdcsl.next_id, mdcsl.is_ready_for_review, mdcsl.is_initialize
-from select_multiuser_document_classification_status_labels mdcsl;
-
-end;
-$$;
-
-
-ALTER FUNCTION public.select_multiuser_document_classification_status_labels(in_user_id integer) OWNER TO ben;
 
 --
 -- Name: select_next_job(integer, integer); Type: FUNCTION; Schema: public; Owner: ben
@@ -3636,8 +3623,7 @@ CREATE TABLE public.projects (
     createdate timestamp(6) with time zone DEFAULT now() NOT NULL,
     owner_user_id integer NOT NULL,
     ready_for_review_id integer NOT NULL,
-    checkout_timeout integer DEFAULT 600 NOT NULL,
-    name character varying(100)
+    checkout_timeout integer DEFAULT 600 NOT NULL
 );
 
 
@@ -4051,502 +4037,6 @@ ALTER TABLE public.users_id_seq OWNER TO ben;
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
-
-
---
--- Name: changes; Type: TABLE; Schema: sqitch; Owner: ben
---
-
-CREATE TABLE sqitch.changes (
-    change_id text NOT NULL,
-    script_hash text,
-    change text NOT NULL,
-    project text NOT NULL,
-    note text DEFAULT ''::text NOT NULL,
-    committed_at timestamp with time zone DEFAULT clock_timestamp() NOT NULL,
-    committer_name text NOT NULL,
-    committer_email text NOT NULL,
-    planned_at timestamp with time zone NOT NULL,
-    planner_name text NOT NULL,
-    planner_email text NOT NULL
-);
-
-
-ALTER TABLE sqitch.changes OWNER TO ben;
-
---
--- Name: TABLE changes; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON TABLE sqitch.changes IS 'Tracks the changes currently deployed to the database.';
-
-
---
--- Name: COLUMN changes.change_id; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.change_id IS 'Change primary key.';
-
-
---
--- Name: COLUMN changes.script_hash; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.script_hash IS 'Deploy script SHA-1 hash.';
-
-
---
--- Name: COLUMN changes.change; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.change IS 'Name of a deployed change.';
-
-
---
--- Name: COLUMN changes.project; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.project IS 'Name of the Sqitch project to which the change belongs.';
-
-
---
--- Name: COLUMN changes.note; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.note IS 'Description of the change.';
-
-
---
--- Name: COLUMN changes.committed_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.committed_at IS 'Date the change was deployed.';
-
-
---
--- Name: COLUMN changes.committer_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.committer_name IS 'Name of the user who deployed the change.';
-
-
---
--- Name: COLUMN changes.committer_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.committer_email IS 'Email address of the user who deployed the change.';
-
-
---
--- Name: COLUMN changes.planned_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.planned_at IS 'Date the change was added to the plan.';
-
-
---
--- Name: COLUMN changes.planner_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.planner_name IS 'Name of the user who planed the change.';
-
-
---
--- Name: COLUMN changes.planner_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.changes.planner_email IS 'Email address of the user who planned the change.';
-
-
---
--- Name: dependencies; Type: TABLE; Schema: sqitch; Owner: ben
---
-
-CREATE TABLE sqitch.dependencies (
-    change_id text NOT NULL,
-    type text NOT NULL,
-    dependency text NOT NULL,
-    dependency_id text,
-    CONSTRAINT dependencies_check CHECK ((((type = 'require'::text) AND (dependency_id IS NOT NULL)) OR ((type = 'conflict'::text) AND (dependency_id IS NULL))))
-);
-
-
-ALTER TABLE sqitch.dependencies OWNER TO ben;
-
---
--- Name: TABLE dependencies; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON TABLE sqitch.dependencies IS 'Tracks the currently satisfied dependencies.';
-
-
---
--- Name: COLUMN dependencies.change_id; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.dependencies.change_id IS 'ID of the depending change.';
-
-
---
--- Name: COLUMN dependencies.type; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.dependencies.type IS 'Type of dependency.';
-
-
---
--- Name: COLUMN dependencies.dependency; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.dependencies.dependency IS 'Dependency name.';
-
-
---
--- Name: COLUMN dependencies.dependency_id; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.dependencies.dependency_id IS 'Change ID the dependency resolves to.';
-
-
---
--- Name: events; Type: TABLE; Schema: sqitch; Owner: ben
---
-
-CREATE TABLE sqitch.events (
-    event text NOT NULL,
-    change_id text NOT NULL,
-    change text NOT NULL,
-    project text NOT NULL,
-    note text DEFAULT ''::text NOT NULL,
-    requires text[] DEFAULT '{}'::text[] NOT NULL,
-    conflicts text[] DEFAULT '{}'::text[] NOT NULL,
-    tags text[] DEFAULT '{}'::text[] NOT NULL,
-    committed_at timestamp with time zone DEFAULT clock_timestamp() NOT NULL,
-    committer_name text NOT NULL,
-    committer_email text NOT NULL,
-    planned_at timestamp with time zone NOT NULL,
-    planner_name text NOT NULL,
-    planner_email text NOT NULL,
-    CONSTRAINT events_event_check CHECK ((event = ANY (ARRAY['deploy'::text, 'revert'::text, 'fail'::text, 'merge'::text])))
-);
-
-
-ALTER TABLE sqitch.events OWNER TO ben;
-
---
--- Name: TABLE events; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON TABLE sqitch.events IS 'Contains full history of all deployment events.';
-
-
---
--- Name: COLUMN events.event; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.event IS 'Type of event.';
-
-
---
--- Name: COLUMN events.change_id; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.change_id IS 'Change ID.';
-
-
---
--- Name: COLUMN events.change; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.change IS 'Change name.';
-
-
---
--- Name: COLUMN events.project; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.project IS 'Name of the Sqitch project to which the change belongs.';
-
-
---
--- Name: COLUMN events.note; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.note IS 'Description of the change.';
-
-
---
--- Name: COLUMN events.requires; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.requires IS 'Array of the names of required changes.';
-
-
---
--- Name: COLUMN events.conflicts; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.conflicts IS 'Array of the names of conflicting changes.';
-
-
---
--- Name: COLUMN events.tags; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.tags IS 'Tags associated with the change.';
-
-
---
--- Name: COLUMN events.committed_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.committed_at IS 'Date the event was committed.';
-
-
---
--- Name: COLUMN events.committer_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.committer_name IS 'Name of the user who committed the event.';
-
-
---
--- Name: COLUMN events.committer_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.committer_email IS 'Email address of the user who committed the event.';
-
-
---
--- Name: COLUMN events.planned_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.planned_at IS 'Date the event was added to the plan.';
-
-
---
--- Name: COLUMN events.planner_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.planner_name IS 'Name of the user who planed the change.';
-
-
---
--- Name: COLUMN events.planner_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.events.planner_email IS 'Email address of the user who plan planned the change.';
-
-
---
--- Name: projects; Type: TABLE; Schema: sqitch; Owner: ben
---
-
-CREATE TABLE sqitch.projects (
-    project text NOT NULL,
-    uri text,
-    created_at timestamp with time zone DEFAULT clock_timestamp() NOT NULL,
-    creator_name text NOT NULL,
-    creator_email text NOT NULL
-);
-
-
-ALTER TABLE sqitch.projects OWNER TO ben;
-
---
--- Name: TABLE projects; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON TABLE sqitch.projects IS 'Sqitch projects deployed to this database.';
-
-
---
--- Name: COLUMN projects.project; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.projects.project IS 'Unique Name of a project.';
-
-
---
--- Name: COLUMN projects.uri; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.projects.uri IS 'Optional project URI';
-
-
---
--- Name: COLUMN projects.created_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.projects.created_at IS 'Date the project was added to the database.';
-
-
---
--- Name: COLUMN projects.creator_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.projects.creator_name IS 'Name of the user who added the project.';
-
-
---
--- Name: COLUMN projects.creator_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.projects.creator_email IS 'Email address of the user who added the project.';
-
-
---
--- Name: releases; Type: TABLE; Schema: sqitch; Owner: ben
---
-
-CREATE TABLE sqitch.releases (
-    version real NOT NULL,
-    installed_at timestamp with time zone DEFAULT clock_timestamp() NOT NULL,
-    installer_name text NOT NULL,
-    installer_email text NOT NULL
-);
-
-
-ALTER TABLE sqitch.releases OWNER TO ben;
-
---
--- Name: TABLE releases; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON TABLE sqitch.releases IS 'Sqitch registry releases.';
-
-
---
--- Name: COLUMN releases.version; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.releases.version IS 'Version of the Sqitch registry.';
-
-
---
--- Name: COLUMN releases.installed_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.releases.installed_at IS 'Date the registry release was installed.';
-
-
---
--- Name: COLUMN releases.installer_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.releases.installer_name IS 'Name of the user who installed the registry release.';
-
-
---
--- Name: COLUMN releases.installer_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.releases.installer_email IS 'Email address of the user who installed the registry release.';
-
-
---
--- Name: tags; Type: TABLE; Schema: sqitch; Owner: ben
---
-
-CREATE TABLE sqitch.tags (
-    tag_id text NOT NULL,
-    tag text NOT NULL,
-    project text NOT NULL,
-    change_id text NOT NULL,
-    note text DEFAULT ''::text NOT NULL,
-    committed_at timestamp with time zone DEFAULT clock_timestamp() NOT NULL,
-    committer_name text NOT NULL,
-    committer_email text NOT NULL,
-    planned_at timestamp with time zone NOT NULL,
-    planner_name text NOT NULL,
-    planner_email text NOT NULL
-);
-
-
-ALTER TABLE sqitch.tags OWNER TO ben;
-
---
--- Name: TABLE tags; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON TABLE sqitch.tags IS 'Tracks the tags currently applied to the database.';
-
-
---
--- Name: COLUMN tags.tag_id; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.tag_id IS 'Tag primary key.';
-
-
---
--- Name: COLUMN tags.tag; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.tag IS 'Project-unique tag name.';
-
-
---
--- Name: COLUMN tags.project; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.project IS 'Name of the Sqitch project to which the tag belongs.';
-
-
---
--- Name: COLUMN tags.change_id; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.change_id IS 'ID of last change deployed before the tag was applied.';
-
-
---
--- Name: COLUMN tags.note; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.note IS 'Description of the tag.';
-
-
---
--- Name: COLUMN tags.committed_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.committed_at IS 'Date the tag was applied to the database.';
-
-
---
--- Name: COLUMN tags.committer_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.committer_name IS 'Name of the user who applied the tag.';
-
-
---
--- Name: COLUMN tags.committer_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.committer_email IS 'Email address of the user who applied the tag.';
-
-
---
--- Name: COLUMN tags.planned_at; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.planned_at IS 'Date the tag was added to the plan.';
-
-
---
--- Name: COLUMN tags.planner_name; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.planner_name IS 'Name of the user who planed the tag.';
-
-
---
--- Name: COLUMN tags.planner_email; Type: COMMENT; Schema: sqitch; Owner: ben
---
-
-COMMENT ON COLUMN sqitch.tags.planner_email IS 'Email address of the user who planned the tag.';
 
 
 --
@@ -5249,78 +4739,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: changes_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.changes
-    ADD CONSTRAINT changes_pkey PRIMARY KEY (change_id);
-
-
---
--- Name: changes_project_script_hash_key; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.changes
-    ADD CONSTRAINT changes_project_script_hash_key UNIQUE (project, script_hash);
-
-
---
--- Name: dependencies_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.dependencies
-    ADD CONSTRAINT dependencies_pkey PRIMARY KEY (change_id, dependency);
-
-
---
--- Name: events_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.events
-    ADD CONSTRAINT events_pkey PRIMARY KEY (change_id, committed_at);
-
-
---
--- Name: projects_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.projects
-    ADD CONSTRAINT projects_pkey PRIMARY KEY (project);
-
-
---
--- Name: projects_uri_key; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.projects
-    ADD CONSTRAINT projects_uri_key UNIQUE (uri);
-
-
---
--- Name: releases_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.releases
-    ADD CONSTRAINT releases_pkey PRIMARY KEY (version);
-
-
---
--- Name: tags_pkey; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.tags
-    ADD CONSTRAINT tags_pkey PRIMARY KEY (tag_id);
-
-
---
--- Name: tags_project_tag_key; Type: CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.tags
-    ADD CONSTRAINT tags_project_tag_key UNIQUE (project, tag);
-
-
---
 -- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: ben
 --
 
@@ -5772,54 +5190,6 @@ ALTER TABLE ONLY public.user_role_assignments
 
 
 --
--- Name: changes_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.changes
-    ADD CONSTRAINT changes_project_fkey FOREIGN KEY (project) REFERENCES sqitch.projects(project) ON UPDATE CASCADE;
-
-
---
--- Name: dependencies_change_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.dependencies
-    ADD CONSTRAINT dependencies_change_id_fkey FOREIGN KEY (change_id) REFERENCES sqitch.changes(change_id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: dependencies_dependency_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.dependencies
-    ADD CONSTRAINT dependencies_dependency_id_fkey FOREIGN KEY (dependency_id) REFERENCES sqitch.changes(change_id) ON UPDATE CASCADE;
-
-
---
--- Name: events_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.events
-    ADD CONSTRAINT events_project_fkey FOREIGN KEY (project) REFERENCES sqitch.projects(project) ON UPDATE CASCADE;
-
-
---
--- Name: tags_change_id_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.tags
-    ADD CONSTRAINT tags_change_id_fkey FOREIGN KEY (change_id) REFERENCES sqitch.changes(change_id) ON UPDATE CASCADE;
-
-
---
--- Name: tags_project_fkey; Type: FK CONSTRAINT; Schema: sqitch; Owner: ben
---
-
-ALTER TABLE ONLY sqitch.tags
-    ADD CONSTRAINT tags_project_fkey FOREIGN KEY (project) REFERENCES sqitch.projects(project) ON UPDATE CASCADE;
-
-
---
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -5833,3 +5203,4 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- PostgreSQL database dump complete
 --
 
+COMMIT;

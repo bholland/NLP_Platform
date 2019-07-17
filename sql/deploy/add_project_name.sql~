@@ -1,0 +1,80 @@
+-- Deploy nlp_schema:add_project_name to pg
+
+BEGIN;
+
+ALTER TABLE public.projects
+    ADD COLUMN "name" character varying(100);
+
+
+DROP FUNCTION IF EXISTS public.insert_project(integer, integer, integer, integer);
+
+CREATE OR REPLACE FUNCTION public.insert_project(
+	in_name character varying,
+	in_user_id integer,
+	in_owner_user_id integer,
+	in_ready_for_review_id integer,
+	in_checkout_timeout integer DEFAULT 600)
+    RETURNS TABLE(out_id integer) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+    ROWS 1000
+AS $BODY$
+declare new_id integer;
+begin
+
+perform log_message(in_user_id, 'insert_project', null);
+
+--only have a single project setting.
+truncate table projects;
+
+insert into projects
+("name", owner_user_id, ready_for_review_id, checkout_timeout)
+values
+(in_name, in_owner_user_id, in_ready_for_review_id, in_checkout_timeout)
+returning id into new_id;
+
+return query
+select new_id;
+
+end;
+$BODY$;
+
+ALTER FUNCTION public.insert_project(character varying, integer, integer, integer, integer)
+    OWNER TO ben;
+
+
+DROP FUNCTION IF EXISTS public.insert_document_classification_status(integer, text, bit, bit);
+
+CREATE OR REPLACE FUNCTION public.insert_document_classification_status(
+	in_user_id integer,
+	in_status text,
+	in_is_ready_for_review boolean,
+	in_is_requires_admin boolean)
+    RETURNS TABLE(out_id integer) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+    ROWS 1000
+AS $BODY$
+declare new_id integer;
+begin
+
+perform log_message(in_user_id, 'insert_document_classification_status', null);
+
+insert into document_classification_status
+(status_text, is_ready_for_review, is_requires_admin)
+values
+(in_status, in_is_ready_for_review, in_is_requires_admin)
+returning id into new_id;
+
+return query
+select new_id;
+
+end;
+$BODY$;
+
+ALTER FUNCTION public.insert_document_classification_status(integer, text, boolean, boolean)
+    OWNER TO ben;
+
+COMMIT;

@@ -1,0 +1,5 @@
+%syntax-version=1.0.0
+%project=nlp_schema
+
+init 2019-07-02T21:05:42Z Ben Holland <ben_holland@abtassoc.com> # initial schema commit
+@v1 2019-07-02T21:06:48Z Ben Holland <ben_holland@abtassoc.com> # tagging the intial deployment.

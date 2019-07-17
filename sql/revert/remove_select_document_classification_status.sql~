@@ -1,0 +1,7 @@
+-- Revert nlp_schema:remove_select_document_classification_status from pg
+
+BEGIN;
+
+-- XXX Add DDLs here.
+
+COMMIT;
