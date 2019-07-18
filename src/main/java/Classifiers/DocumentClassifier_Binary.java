@@ -21,7 +21,7 @@ public class DocumentClassifier_Binary extends DocumentClassifier_ImplBase {
     
     public DocumentClassifier_Binary(Connection sql_connection, Integer user_id) throws SQLException {
         super(sql_connection, user_id);
-        Setup();
+        Setup(user_id);
     }
 
     @Override

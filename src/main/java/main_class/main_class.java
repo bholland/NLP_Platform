@@ -20,6 +20,8 @@
 package main_class;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -139,7 +141,9 @@ public class main_class extends Thread {
      *          Command line arguments - see class description
      */
     public static void main(String[] args) throws Exception {
-        PropertyConfigurator.configure("/home/ben/workspace/opennlp_processing/src/logging.properties");
+    	//Path path = FileSystems.getDefault().getPath(".").toAbsolutePath();
+    	//System.out.println(path);
+        PropertyConfigurator.configure("./src/logging.properties");
         new main_class(args);
         System.exit(0); //oddly, this is needed. Maven will hang without an exit call.  
     }

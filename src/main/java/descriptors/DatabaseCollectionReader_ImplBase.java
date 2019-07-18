@@ -16,6 +16,7 @@ import org.apache.uima.util.Progress;
 
 import database.DatabaseConnector;
 import helper.DatabaseHelper;
+import job_queue.Job;
 import objects.DatabaseConnection;
 
 /**
@@ -27,7 +28,7 @@ import objects.DatabaseConnection;
  * learning).  
  */
 
-public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader_ImplBase {
+public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader_ImplBase implements Job {
     
     /**
      * Database server location (probably localhost. 
@@ -58,6 +59,16 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
      * The database server type
      */
     public static final String PARAM_DATABASE_TYPE = "DatabaseType";
+    
+    /**
+     * Logging user ID
+     */
+    public static final String PARAM_LOGGING_USER_ID = "LoggingUserId";
+    
+    /**
+     * Use the job queue functionality
+     */
+    public static final String PARAM_USE_JOB_QUEUE = "UseJobQueue";
     
     /**
      * Recreate the model.
@@ -140,6 +151,7 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
     protected String mModelTableName;
     protected String mModelType;
     protected String mDataTable;
+    protected Integer mUseRunQueue;
     
     @Override
     public void initialize() throws ResourceInitializationException {
@@ -170,10 +182,13 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         String port = (String) getConfigParameterValue(PARAM_DATABASE_SERVER_PORT);
         String type = (String) getConfigParameterValue(PARAM_DATABASE_TYPE);
         
+        Integer logging_user_id = (Integer) getConfigParameterValue(PARAM_LOGGING_USER_ID);
+        Integer use_job_queue = (Integer) getConfigParameterValue(PARAM_USE_JOB_QUEUE);
+
         setRecreateModel((Boolean) getConfigParameterValue(PARAM_RECREATE_MODEL));
         setModelFileName((String) getConfigParameterValue(PARAM_MODEL_FILE_NAME));
         
-        return getDatabaseConnector(type, database_server, port, database, user_name, password);
+        return getDatabaseConnector(type, database_server, port, database, user_name, password, logging_user_id, use_job_queue);
     }
     
     /**
@@ -190,15 +205,23 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
      * @throws IOException
      */
     public DatabaseConnector getDatabaseConnector(String type, String database_server, 
-            String port, String database, String user_name, String password) throws SQLException, ClassNotFoundException, IOException {
+            String port, String database, String user_name, String password, 
+            Integer logging_user_id, Integer use_run_queue) throws SQLException, ClassNotFoundException, IOException {
         
+    	if (use_run_queue != Job.JOB_QUEUE_DISABLED && use_run_queue != Job.JOB_QUEUE_INSERT && use_run_queue != Job.JOB_QUEUE_PROCESS) {
+    		throw new IOException(String.format("The value for use_run_queue is %s but the only accepted values are: %s, %s, %s", 
+    				use_run_queue, Job.JOB_QUEUE_DISABLED, Job.JOB_QUEUE_INSERT, Job.JOB_QUEUE_PROCESS));
+    	}
+    	
         mDatabaseServer = database_server;
         mDatabase = database;
         mUserName = user_name;
         mPassword = password;
         mPort = port;
         mType = type;
-                
+        mUseRunQueue = use_run_queue;
+        mLoggingUserId = logging_user_id;
+            
         if (mPort == null && mType == null) {
             throw new SQLException();
         }
@@ -224,7 +247,7 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         	Connection connection = connector.getConnection();
         	mLoggingUserId = DatabaseHelper.getLoggingUserNameId(connection, LOGGING_USER);
         	if (mLoggingUserId == null) {
-        		DatabaseHelper.addNewUser(connection, null, LOGGING_USER, LOGGING_USER_EMAIL, "nlp logger", "nlp logger");
+        		DatabaseHelper.addNewUser(connection, LOGGING_USER, LOGGING_USER_EMAIL, "nlp logger", "nlp logger");
         		mLoggingUserId = DatabaseHelper.getLoggingUserNameId(connection, LOGGING_USER);
         	}
         	connector.setLoggingUserId(mLoggingUserId);
@@ -265,6 +288,14 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         return mType;
     }
     
+    public Integer getLoggingUserId() {
+    	return mLoggingUserId;
+    }
+    
+    public Integer getUseRunQueue() {
+    	return mUseRunQueue;
+    }
+    
     public JCas addDatabaseToCas(JCas jcas) {
         DatabaseConnection db_conn = new DatabaseConnection(jcas);
         db_conn.setDatabaseServer(mDatabaseServer);
@@ -274,6 +305,7 @@ public abstract class DatabaseCollectionReader_ImplBase extends CollectionReader
         db_conn.setPassword(mPassword);
         db_conn.setDatabaseType(mType);
         db_conn.setLoggingUserId(mLoggingUserId);
+        db_conn.setUseJobQueue(mUseRunQueue);
         db_conn.addToIndexes();
         return jcas;
     }

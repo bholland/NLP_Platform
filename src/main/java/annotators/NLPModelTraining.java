@@ -37,22 +37,24 @@ public class NLPModelTraining extends JCasAnnotator_ImplBase {
         try (DatabaseConnector connector = new DatabaseConnector(database_connection)) {
         	connector.connect();
             Connection sql_connection = connector.getConnection();
-            DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection);
-            
-            Integer category_id = DatabaseHelper.getCategoryId(sql_connection, connector.getLoggingUserId(), nlp_model.getCategoryName());
-            classifier.SetActiveCategoryId(category_id);
-            classifier.SetupTrainer();
-            DoccatModel model = classifier.train(category_id);
-            
-            /*OutputStream modelOut = null;
-            try {
-                modelOut = new BufferedOutputStream(new FileOutputStream(String.format("model_%s.bin", category_id)));
-                model.serialize(modelOut);
-            } catch (IOException e) {
-                // Failed to save model
-                e.printStackTrace();
-            }*/
-            DatabaseHelper.putDoccatModelFile(sql_connection, connector.getLoggingUserId(), category_id, model);
+            Integer mLoggingUserId = connector.getLoggingUserId();
+            try (DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection, mLoggingUserId)) {
+	            
+	            Integer category_id = DatabaseHelper.getCategoryId(sql_connection, connector.getLoggingUserId(), nlp_model.getCategoryName());
+	            classifier.SetActiveCategoryId(category_id);
+	            classifier.SetupTrainer();
+	            DoccatModel model = classifier.train(category_id);
+	            
+	            /*OutputStream modelOut = null;
+	            try {
+	                modelOut = new BufferedOutputStream(new FileOutputStream(String.format("model_%s.bin", category_id)));
+	                model.serialize(modelOut);
+	            } catch (IOException e) {
+	                // Failed to save model
+	                e.printStackTrace();
+	            }*/
+	            DatabaseHelper.putDoccatModelFile(sql_connection, connector.getLoggingUserId(), category_id, model);
+            }
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

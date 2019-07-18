@@ -39,9 +39,17 @@ public class SentenceToDatabaseAnnotator extends JCasAnnotator_ImplBase {
         Connection sql_connection = connector.getConnection();
         Integer sentence_id = null;
         if (is_document) {
-            sentence_id = DatabaseHelper.insertDocumentSentence(sql_connection, connector.getLoggingUserId(), sentence_string, unprocessed_text_id, sentence.getSentenceNumber());
+        	//the job queue might fall out of sync with all of the cleaning issues. 
+        	//Just return if the text id doesn't exist 
+        	if (DatabaseHelper.getDocumentTextFromID(sql_connection, connector.getLoggingUserId(), unprocessed_text_id) == null) {
+        		return;
+        	}
+        	sentence_id = DatabaseHelper.insertDocumentSentence(sql_connection, connector.getLoggingUserId(), sentence_string, unprocessed_text_id, sentence.getSentenceNumber());
             
         } else {
+        	if (DatabaseHelper.getCategoryTextFromID(sql_connection, connector.getLoggingUserId(), unprocessed_text_id) == null) {
+        		return;
+        	}
             sentence_id = DatabaseHelper.insertCategorySentence(sql_connection, connector.getLoggingUserId(), sentence_string, unprocessed_text_id, sentence.getSentenceNumber()); 
         }
         sentence.setSentence_id(sentence_id);
@@ -53,9 +61,9 @@ public class SentenceToDatabaseAnnotator extends JCasAnnotator_ImplBase {
         
         for (int x = 0; x < words.size(); x++) {
             if (is_document) {
-                DatabaseHelper.insertDocumentSentenceMetadata(sql_connection, connector.getLoggingUserId(), sentence_id, x, words.get(x), tags.get(x), chunks.get(x), stemmed_words.get(x));
+                DatabaseHelper.insertDocumentSentenceMetadata(sql_connection, connector.getLoggingUserId(), sentence_id, x, words.get(x), tags.get(x), chunks.get(x), stemmed_words.get(x), sentence.getIsRawSentence());
             } else {
-                DatabaseHelper.insertCategorySentenceMetadata(sql_connection, connector.getLoggingUserId(), sentence_id, x, words.get(x), tags.get(x), chunks.get(x), stemmed_words.get(x));    
+                DatabaseHelper.insertCategorySentenceMetadata(sql_connection, connector.getLoggingUserId(), sentence_id, x, words.get(x), tags.get(x), chunks.get(x), stemmed_words.get(x), sentence.getIsRawSentence());    
             }
         }
     }

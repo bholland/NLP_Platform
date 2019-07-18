@@ -41,31 +41,31 @@ public class NLPModelTagging extends JCasAnnotator_ImplBase {
         try (DatabaseConnector connector = new DatabaseConnector(mDatabaseConnection)) {
         	connector.connect();
             Connection sql_connection = connector.getConnection();
-            DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection);
-            
-            Integer category_id = DatabaseHelper.getCategoryId(sql_connection, connector.getLoggingUserId(), nlp_model.getCategoryName());
-            Integer batch_number = nlp_model.getBatchNumber();
-            DoccatModel model = DatabaseHelper.getDoccatModel(sql_connection, connector.getLoggingUserId(), category_id);           
-            HashMap<Integer, ArrayList<String>> documents = DatabaseHelper.getDocumentTokens(sql_connection, connector.getLoggingUserId());
-            
-            for (Integer text_id: documents.keySet()) {
-                ArrayList<String> document =  documents.get(text_id);
-                String[] tmp = document.toArray(new String[0]);
-                
-                DocumentCategorizerME cat = new DocumentCategorizerME(model);
-                double[] outcomes = cat.categorize(tmp);
-                String cat1 = cat.getCategory(0);
-                String cat2 = cat.getCategory(1);
-                
-                //force the is_not category as cat1. 
-                if (cat1.startsWith("is_not")) {
-                    //System.out.println(String.format("%s: %s\n%s: %s", cat1, outcomes[0], cat2, outcomes[1]));
-                    DatabaseHelper.insertCategoryProbabilities(sql_connection, connector.getLoggingUserId(), batch_number, text_id, category_id, cat1, outcomes[0], cat2, outcomes[1]);
-                } else {
-                    DatabaseHelper.insertCategoryProbabilities(sql_connection, connector.getLoggingUserId(), batch_number, text_id, category_id, cat2, outcomes[1], cat1, outcomes[0]);
-                }
-                    
-                       
+            Integer mLoggingUserId = connector.getLoggingUserId();
+            try (DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection, mLoggingUserId)) {
+	            
+	            Integer category_id = DatabaseHelper.getCategoryId(sql_connection, connector.getLoggingUserId(), nlp_model.getCategoryName());
+	            Integer batch_number = nlp_model.getBatchNumber();
+	            DoccatModel model = DatabaseHelper.getDoccatModel(sql_connection, connector.getLoggingUserId(), category_id);           
+	            HashMap<Integer, ArrayList<String>> documents = DatabaseHelper.getDocumentTokens(sql_connection, connector.getLoggingUserId());
+	            
+	            for (Integer text_id: documents.keySet()) {
+	                ArrayList<String> document =  documents.get(text_id);
+	                String[] tmp = document.toArray(new String[0]);
+	                
+	                DocumentCategorizerME cat = new DocumentCategorizerME(model);
+	                double[] outcomes = cat.categorize(tmp);
+	                String cat1 = cat.getCategory(0);
+	                String cat2 = cat.getCategory(1);
+	                
+	                //force the is_not category as cat1. 
+	                if (cat1.startsWith("is_not")) {
+	                    //System.out.println(String.format("%s: %s\n%s: %s", cat1, outcomes[0], cat2, outcomes[1]));
+	                    DatabaseHelper.insertCategoryProbabilities(sql_connection, mLoggingUserId, batch_number, text_id, category_id, cat1, outcomes[0], cat2, outcomes[1]);
+	                } else {
+	                    DatabaseHelper.insertCategoryProbabilities(sql_connection, mLoggingUserId, batch_number, text_id, category_id, cat2, outcomes[1], cat1, outcomes[0]);
+	                }
+	            }
             }
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block

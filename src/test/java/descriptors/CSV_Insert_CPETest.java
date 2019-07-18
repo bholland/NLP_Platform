@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -69,8 +70,11 @@ public class CSV_Insert_CPETest {
         password = "password";
         database_connection = String.format("jdbc:postgresql://localhost:5432/%s", database);
         
-        csv_filename_no_cat = "test_csv_no_cat.csv";
-        csv_filename_cat = "test_csv_no_cat.csv";
+        File csv_filename_no_cat_fh = new File("test_csv_no_cat.csv");
+        File csv_filename_cat_fh = new File("test_csv_cat.csv");
+        
+        csv_filename_no_cat = csv_filename_no_cat_fh.getAbsolutePath();
+        csv_filename_cat = csv_filename_cat_fh.getAbsolutePath();
         
         Connection c;
         
@@ -96,7 +100,7 @@ public class CSV_Insert_CPETest {
         s.executeUpdate(statement_str);
         
         LoremIpsum li = new LoremIpsum();
-        try(BufferedWriter csv_file_output = new BufferedWriter(new FileWriter(new File(csv_filename_no_cat)))) {
+        try(BufferedWriter csv_file_output = new BufferedWriter(new FileWriter(csv_filename_no_cat_fh))) {
         	CSVPrinter csvPrinter = new CSVPrinter(csv_file_output, CSVFormat.DEFAULT
                     .withHeader("ID", "Text"));
         	csvPrinter.printRecord("1", li.getParagraphs(2));
@@ -109,7 +113,7 @@ public class CSV_Insert_CPETest {
 			e.printStackTrace();
 		}
         
-        try(BufferedWriter csv_file_output = new BufferedWriter(new FileWriter(new File(csv_filename_cat)))) {
+        try(BufferedWriter csv_file_output = new BufferedWriter(new FileWriter(csv_filename_cat_fh))) {
         	CSVPrinter csvPrinter = new CSVPrinter(csv_file_output, CSVFormat.DEFAULT
                     .withHeader("ID", "Text", "category", "in_category"));
         	csvPrinter.printRecord("1", li.getParagraphs(2), "null", "false");
@@ -142,6 +146,23 @@ public class CSV_Insert_CPETest {
     public void tearDown() throws SQLException {
 		File f = new File(csv_filename_no_cat);
 		f.delete();
+		
+		try {
+            Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", user_name, password);
+            Statement s = c.createStatement();
+            s.executeUpdate(String.format("DROP DATABASE %s", database));
+            c.close();
+        } catch (SQLException e) {
+            Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", user_name, password);
+            Statement s = c.createStatement();
+            String terminate = String.format("SELECT pg_terminate_backend(pid)" + 
+                    "            FROM pg_stat_activity " + 
+                    "            WHERE datname = '%s';", database);
+            s.executeQuery(terminate);
+            
+            s.executeUpdate(String.format("DROP DATABASE %s", database));
+            c.close();
+        }
 	}
 	
 	//insertCSVFile(Connection connection, String csv_file, String id_column, 
@@ -181,7 +202,7 @@ public class CSV_Insert_CPETest {
         }
 	}
 	
-	@Test(expected = SQLException.class)
+	@Test(expected = IllegalArgumentException.class)
     public void testinsertCSVFile_Throws_Error() throws FileNotFoundException, SQLException, IOException, CollectionException, ResourceInitializationException {
 		CSV_Insert_CPE cpe = new CSV_Insert_CPE();
 		try (Connection connection = DriverManager.getConnection(database_connection, "ben", "password")) {
@@ -250,4 +271,151 @@ public class CSV_Insert_CPETest {
 			}
         }
 	}
+	
+	@Test
+    public void testinsertCSVFileFilePathTest() throws FileNotFoundException, SQLException, IOException, CollectionException, ResourceInitializationException {
+		CSV_Insert_CPE cpe = new CSV_Insert_CPE();
+		try (Connection connection = DriverManager.getConnection(database_connection, "ben", "password")) {
+			cpe.insertCSVFile(connection, 14, csv_filename_cat, "ID", "Text", false, null, null);
+			
+			ArrayList<String> unprocessed = DatabaseHelper.selectUnprocessedFiles(connection, 14);
+			assertEquals(1, unprocessed.size());
+			assertEquals(csv_filename_cat, unprocessed.get(0));
+			
+			ArrayList<String> procssed = DatabaseHelper.selectProcessedFiles(connection, 14);
+			assertEquals(0, procssed.size());
+			
+			
+			
+			/*PreparedStatement ps = connection.prepareStatement("SELECT count(*) from document_text");
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				int count = rs.getInt(1);
+				assertEquals(count, 3);
+			}
+			
+			ps = connection.prepareStatement("SELECT count(*) from category_text");
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				int count = rs.getInt(1);
+				assertEquals(count, 0);
+			}*/
+        }
+	}
+	
+	@Test
+    public void testinsertCSVFileFilePathDoesNotExistTest() throws FileNotFoundException, SQLException, IOException, CollectionException, ResourceInitializationException {
+		CSV_Insert_CPE cpe = new CSV_Insert_CPE();
+		
+		String[] file_names = {csv_filename_no_cat};
+		String[] id_columns = {"ID"};
+		String[] text_columns = {"Text"};
+		Boolean[] is_model_data = {false};
+		String[] csv_category_column = {"None"};
+		String[] is_in_category_column = {"None"};
+		Integer user_id = 14;
+		
+		try (Connection connection = DriverManager.getConnection(database_connection, "ben", "password")) {
+			
+			String file_path_insert = String.format("insert into completed_processed_files (file_path, is_complete) values ('%s', FALSE);", csv_filename_cat);
+			PreparedStatement ps = connection.prepareStatement(file_path_insert);
+			ps.execute();
+			
+			ArrayList<String> unprocssed = DatabaseHelper.selectUnprocessedFiles(connection, 14);
+			assertEquals(1, unprocssed.size());
+			assertEquals(csv_filename_cat, unprocssed.get(0));
+			
+			ArrayList<String> procssed = DatabaseHelper.selectProcessedFiles(connection, 14);
+			assertEquals(0, procssed.size());
+			
+			cpe.CSVInsertDriver(connection, user_id, file_names, id_columns, text_columns, is_model_data, csv_category_column, is_in_category_column);
+			assertEquals(0, cpe.getProcessedFiles().size());
+			assertEquals(1, cpe.getFilesToProcess().size());
+        }
+	}
+	
+	@Test
+    public void testinsertCSVFileFilePathExistsTest() throws FileNotFoundException, SQLException, IOException, CollectionException, ResourceInitializationException {
+		CSV_Insert_CPE cpe = new CSV_Insert_CPE();
+		String[] file_names = {csv_filename_cat};
+		String[] id_columns = {"ID"};
+		String[] text_columns = {"Text"};
+		Boolean[] is_model_data = {false};
+		String[] csv_category_column = {"None"};
+		String[] is_in_category_column = {"None"};
+		Integer user_id = 14;
+		
+		try (Connection connection = DriverManager.getConnection(database_connection, "ben", "password")) {
+			
+			String file_path_insert = String.format("insert into completed_processed_files (file_path, is_complete) values ('%s', TRUE);", csv_filename_cat);
+			PreparedStatement ps = connection.prepareStatement(file_path_insert);
+			ps.execute();
+			
+			ArrayList<String> unprocssed = DatabaseHelper.selectUnprocessedFiles(connection, 14);
+			assertEquals(0, unprocssed.size());
+			
+			ArrayList<String> procssed = DatabaseHelper.selectProcessedFiles(connection, 14);
+			assertEquals(1, procssed.size());
+			assertEquals(csv_filename_cat, procssed.get(0));
+			
+			cpe.CSVInsertDriver(connection, user_id, file_names, id_columns, text_columns, is_model_data, csv_category_column, is_in_category_column);
+			assertEquals(1, cpe.getFilesToProcess().size());
+			
+			Statement s = connection.createStatement();
+			String select_statement = "SELECT id, file_path, is_complete from completed_processed_files;";
+			s.execute(select_statement);
+			ResultSet rs = s.getResultSet();
+			int row_count = 0;
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				String file_path = rs.getString(2);
+				Boolean is_complete = rs.getBoolean(3);
+				assertEquals("filepath does not equal input.", file_path, csv_filename_cat);
+				assertTrue("is_complete should be true here", is_complete == true);
+				row_count++;
+			}
+			assertTrue("There should only be a single row.", row_count == 1);
+        }
+	}
+	
+	@Test
+    public void testClose() throws FileNotFoundException, SQLException, IOException, CollectionException, ResourceInitializationException {
+		CSV_Insert_CPE cpe = new CSV_Insert_CPE();
+		String[] file_names = {csv_filename_cat};
+		String[] id_columns = {"ID"};
+		String[] text_columns = {"Text"};
+		Boolean[] is_model_data = {false};
+		String[] csv_category_column = {"None"};
+		String[] is_in_category_column = {"None"};
+		Integer user_id = 14;
+		
+		try (Connection connection = DriverManager.getConnection(database_connection, "ben", "password")) {
+			
+			String file_path_insert = String.format("insert into completed_processed_files (file_path, is_complete) values ('%s', FALSE);", csv_filename_cat);
+			PreparedStatement ps = connection.prepareStatement(file_path_insert);
+			ps.execute();
+			
+			ArrayList<String> unprocssed = DatabaseHelper.selectUnprocessedFiles(connection, 14);
+			assertEquals(1, unprocssed.size());
+			assertEquals(csv_filename_cat, unprocssed.get(0));
+			
+			ArrayList<String> procssed = DatabaseHelper.selectProcessedFiles(connection, 14);
+			assertEquals(0, procssed.size());
+			
+			cpe.CSVInsertDriver(connection, user_id, file_names, id_columns, text_columns, is_model_data, csv_category_column, is_in_category_column);
+			assertEquals(0, cpe.getProcessedFiles().size());
+			assertEquals(1, cpe.getFilesToProcess().size());
+			
+			//cpe.close() only calls updatePaths(connection);
+			cpe.updatePaths(connection);
+			
+			unprocssed = DatabaseHelper.selectUnprocessedFiles(connection, 14);
+			assertEquals(0, unprocssed.size());
+			
+			procssed = DatabaseHelper.selectProcessedFiles(connection, 14);
+			assertEquals(1, procssed.size());
+			assertEquals(csv_filename_cat, procssed.get(0));
+        }
+	}
+	
 }

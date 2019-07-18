@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Dec 18 13:10:52 EST 2018 */
+/* Apache UIMA v3 - First created by JCasGen Mon Jun 24 16:57:54 EDT 2019 */
 
 package objects;
 
@@ -19,8 +19,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Dec 18 13:10:52 EST 2018
- * XML source: /home/ben/workspace/NLP_Stack/desc/objects/UnprocessedText.xml
+ * Updated by JCasGen Mon Jun 24 16:57:54 EDT 2019
+ * XML source: /home/ben/workspace/NLP_Stack/desc/annotators/SentenceSplittingAnnotator.xml
  * @generated */
 public class UnprocessedText extends Annotation {
  
@@ -55,6 +55,7 @@ public class UnprocessedText extends Annotation {
   public final static String _FeatName_TextId = "TextId";
   public final static String _FeatName_NumTokens = "NumTokens";
   public final static String _FeatName_IsDocument = "IsDocument";
+  public final static String _FeatName_JobQueueId = "JobQueueId";
 
 
   /* Feature Adjusted Offsets */
@@ -66,6 +67,8 @@ public class UnprocessedText extends Annotation {
   private final static MethodHandle _FH_NumTokens = _FC_NumTokens.dynamicInvoker();
   private final static CallSite _FC_IsDocument = TypeSystemImpl.createCallSite(UnprocessedText.class, "IsDocument");
   private final static MethodHandle _FH_IsDocument = _FC_IsDocument.dynamicInvoker();
+  private final static CallSite _FC_JobQueueId = TypeSystemImpl.createCallSite(UnprocessedText.class, "JobQueueId");
+  private final static MethodHandle _FH_JobQueueId = _FC_JobQueueId.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -186,6 +189,25 @@ public class UnprocessedText extends Annotation {
    */
   public void setIsDocument(boolean v) {
     _setBooleanValueNfc(wrapGetIntCatchException(_FH_IsDocument), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: JobQueueId
+
+  /** getter for JobQueueId - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getJobQueueId() { return _getIntValueNc(wrapGetIntCatchException(_FH_JobQueueId));}
+    
+  /** setter for JobQueueId - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setJobQueueId(int v) {
+    _setIntValueNfc(wrapGetIntCatchException(_FH_JobQueueId), v);
   }    
     
   }

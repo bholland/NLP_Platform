@@ -11,6 +11,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
+import helper.DatabaseHelper;
 import objects.DatabaseConnection;
 
 public class DatabaseConnector implements Closeable{
@@ -28,6 +29,13 @@ public class DatabaseConnector implements Closeable{
     public static final String PARAM_PASSWORD = "DatabasePassword";
     public static final String PARAM_PORT = "DatabasePort";
     public static final String PARAM_DATABASE_TYPE = "DatabaseType";
+    
+    //These need to match the values in the descriptors.DatabaseCollectionReader_ImpBase.java
+    /**
+     * @TODO: Figure out a better way to do this.
+     */
+    protected static final String LOGGING_USER = "nlp_stack";
+    protected static final String LOGGING_USER_EMAIL = "nlp_stack@nlp_stack.com";
     
     /**
      * @param type: the type of the database to connect to. This should be either mysql or pgsql. 
@@ -50,6 +58,7 @@ public class DatabaseConnector implements Closeable{
         String database = database_connection.getDatabase();
         String user_name = database_connection.getUserName();
         String password = database_connection.getPassword();
+        mSqlConnection = null;
         
         setStrings(type, database_server, port, database, user_name, password);
     }
@@ -69,7 +78,13 @@ public class DatabaseConnector implements Closeable{
     }
     
     public void connect() throws SQLException {
-        mSqlConnection = DriverManager.getConnection(mConnectionStr);
+		mSqlConnection = DriverManager.getConnection(mConnectionStr);
+    	mLoggingUserId = DatabaseHelper.getLoggingUserNameId(mSqlConnection, LOGGING_USER);
+        
+    	if (mLoggingUserId == null) {
+    		DatabaseHelper.addNewUser(mSqlConnection, LOGGING_USER, LOGGING_USER_EMAIL, "nlp logger", "nlp logger");
+    		mLoggingUserId = DatabaseHelper.getLoggingUserNameId(mSqlConnection, LOGGING_USER);
+    	}
     }
     
     public Connection getConnection() {
@@ -117,7 +132,7 @@ public class DatabaseConnector implements Closeable{
         }
     }
     
-    public Integer getLoggingUserId() {
+    public Integer getLoggingUserId() throws SQLException {
     	return mLoggingUserId;
     }
     

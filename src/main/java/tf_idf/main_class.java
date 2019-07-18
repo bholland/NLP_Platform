@@ -4,26 +4,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.deeplearning4j.bagofwords.vectorizer.TfidfVectorizer;
-import org.deeplearning4j.bagofwords.vectorizer.TfidfVectorizer.Builder;
-import org.deeplearning4j.nn.api.Model;
-import org.deeplearning4j.text.sentenceiterator.FileSentenceIterator;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
-import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
-
-import org.nd4j.linalg.api.ops.impl.accum.distances.CosineSimilarity;
-import org.nd4j.linalg.api.ops.impl.transforms.ACos;
-import org.deeplearning4j.util.ModelSerializer;
-
+import org.nd4j.linalg.api.ops.impl.transforms.strict.ACos;
 
 public class main_class {
     static Logger logger = Logger.getLogger(main_class.class.getName());
@@ -45,8 +34,9 @@ public class main_class {
         vec.fit();
         
         FileOutputStream f = new FileOutputStream(new File("tf_idf.bin"));
-        ObjectOutputStream o = new ObjectOutputStream(f);
-        o.writeObject(vec);
+        try (ObjectOutputStream o = new ObjectOutputStream(f)) {
+        	o.writeObject(vec);
+        }
         
         
         DatabaseText campaign_text = new DatabaseText("select_mass_campaign_text");

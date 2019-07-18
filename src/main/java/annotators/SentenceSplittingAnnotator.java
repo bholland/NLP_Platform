@@ -66,11 +66,13 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         String[] mChunks;
         String[] mStemmedTokens;
         
+        /* 
         ArrayList<String> mNamesList; 
         Span[] mNamesSpan;
         Span[] mHospitalSpan;
         Span[] mIllnessSpan;
         Span[] mPersonSpan;
+        */
         
         
         private TokenizerME mTokenizer = null;
@@ -78,9 +80,9 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         private NameFinderME mNameFinder = null;
         private ChunkerME mChunker = null;
         private DictionaryLemmatizer mStemmer = null;
-        private NameFinderME mHospitalFinder = null;
-        private NameFinderME mIllnessFinder = null;
-        private NameFinderME mPersonFinder = null;
+        //private NameFinderME mHospitalFinder = null;
+        //private NameFinderME mIllnessFinder = null;
+        //private NameFinderME mPersonFinder = null;
         
         public SentenceReturn(TokenizerME Tokenizer, POSTaggerME POSTagger,
                 ChunkerME Chunker, DictionaryLemmatizer Stemmer, NameFinderME NameFinder) {
@@ -108,10 +110,10 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
             mTags = mPOSTagger.tag(mTokens);
             mChunks = mChunker.chunk(mTokens, mTags);
             mStemmedTokens = mStemmer.lemmatize(mTokens, mTags);
-            mNamesSpan = (mNameFinder != null) ? mNameFinder.find(mTokens) : null;
-            mHospitalSpan = (mHospitalFinder != null) ? mHospitalFinder.find(mTokens) : null;
-            mIllnessSpan = (mIllnessFinder != null) ? mIllnessFinder.find(mTokens) : null;
-            mPersonSpan = (mPersonFinder != null) ? mPersonFinder.find(mTokens) : null;
+            //mNamesSpan = (mNameFinder != null) ? mNameFinder.find(mTokens) : null;
+            //mHospitalSpan = (mHospitalFinder != null) ? mHospitalFinder.find(mTokens) : null;
+            //mIllnessSpan = (mIllnessFinder != null) ? mIllnessFinder.find(mTokens) : null;
+            //mPersonSpan = (mPersonFinder != null) ? mPersonFinder.find(mTokens) : null;
         }
         
         public String[] getTokens() {
@@ -129,7 +131,7 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         public String[] getChunks() {
             return mChunks;
         }
-        
+        /*
         public Span[] getNamesSpan() {
             return mNamesSpan;
         }
@@ -145,6 +147,7 @@ public class SentenceSplittingAnnotator extends JCasAnnotator_ImplBase {
         public Span[] getPersonSpan() {
             return mPersonSpan;
         }
+        */
     }
     
     /**
@@ -191,6 +194,8 @@ public Span[] getNamesSpan() {
     
     public static final String PARAM_IGNORE_GRAMMER = "IgnoreGrammer";
     
+    public static final String PARAM_INCLUDE_DATA_WITHOUT_SPELLCHECK = "IncludeDataWithoutSpellcheck";
+    
     private SentenceDetectorME mSentenceDetector;
     private TokenizerME mTokenizer;
     private POSTaggerME mPOSTagger;
@@ -203,6 +208,7 @@ public Span[] getNamesSpan() {
     private NameFinderME mPersonFinder;
     
     private Boolean mIgnoreGrammer;
+    private Boolean mIncludeDataWithoutSpellcheck;
     
     private ArrayList<String> mIgnoreList; 
     
@@ -282,10 +288,13 @@ public Span[] getNamesSpan() {
         
         sentence.setIsName(is_name_array);
         */
+        
+        /*
         sentence.setIsName(convertBooleanArray(sr.getNamesSpan(), aJCas, copy_size));
         sentence.setIsHospital(convertBooleanArray(sr.getHospitalSpan(), aJCas, copy_size));
         sentence.setIsIllness(convertBooleanArray(sr.getIllnessSpan(), aJCas, copy_size));
         sentence.setIsPerson(convertBooleanArray(sr.getPersonSpan(), aJCas, copy_size));
+        */
         
         sentence.addToIndexes();
         return token_array.size();
@@ -382,7 +391,7 @@ public Span[] getNamesSpan() {
         return text;
     }
     
-    private int processText(JCas aJCas, String text, int text_id) {
+    private int processText(JCas aJCas, String text, int text_id, boolean is_raw_text) {
         SentenceReturn sr = null;
         if (mHospitalFinder != null) {
             sr = new SentenceReturn(mTokenizer, mPOSTagger, mChunker, mStemmer, mHospitalFinder, mIllnessFinder, mPersonFinder);
@@ -414,6 +423,7 @@ public Span[] getNamesSpan() {
             sentence.setText_string(s);
             sentence.setDocumentID(text_id);
             sentence.setSentenceNumber(sent_num);
+            sentence.setIsRawSentence(is_raw_text);
             int num_sent_tokens = processSentence(aJCas, sentence, s, sr);
             sent_num++;
             num_tokens += num_sent_tokens;
@@ -616,7 +626,7 @@ public Span[] getNamesSpan() {
         }
         
         mIgnoreGrammer = (Boolean) getContext().getConfigParameterValue(PARAM_IGNORE_GRAMMER);
-        
+        mIncludeDataWithoutSpellcheck = (Boolean) getContext().getConfigParameterValue(PARAM_INCLUDE_DATA_WITHOUT_SPELLCHECK);
     }
     
     @Override
@@ -647,43 +657,52 @@ public Span[] getNamesSpan() {
         if (database_connection == null) {
             throw new AnalysisEngineProcessException("A database object was not configured for this CAS" , new Object[] {} );
         }
-        
+        String cleaned_document = null;
         try (DatabaseConnector connector = new DatabaseConnector(database_connection)) {
         	connector.connect();
-            Connection sql_connection = connector.getConnection();
-            CallableStatement sp_call = null;
+            Connection connection = connector.getConnection();
+            Integer user_id = connector.getLoggingUserId();
             if (raw_text.getIsDocument()) {
-                sp_call = sql_connection.prepareCall("{call clean_source_sentences(?)}");
+            	//the document might have a job queue id but doesn't exist within the database. Do nothing. 
+            	if (DatabaseHelper.getDocumentTextFromID(connection, user_id, unprocessed_text_id) == null) {
+            		return;
+            	}
+            	DatabaseHelper.cleanDocumentSentences(connection, user_id, unprocessed_text_id);
             } else {
-                sp_call = sql_connection.prepareCall("{call clean_category_sentences(?)}");
+            	if (DatabaseHelper.getCategoryTextFromID(connection, user_id, unprocessed_text_id) == null) {
+            		return;
+            	}
+            	DatabaseHelper.cleanCategorySentences(connection, user_id, unprocessed_text_id);
             }
-            sp_call.setInt(1, unprocessed_text_id);
-            sp_call.execute();
             
-            input_document = cleanText(input_document);
-            input_document = spellcheckText(connector.getLoggingUserId(), unprocessed_text_id, input_document, sql_connection);
+            //go here and figure out how to add a raw sentence that is only cleaned and lowercased. 
+            cleaned_document = cleanText(input_document);
+            input_document = spellcheckText(connector.getLoggingUserId(), unprocessed_text_id, cleaned_document, connection);
             input_document = input_document.toLowerCase();
             
         } catch (SQLException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            throw new AnalysisEngineProcessException("An error occured durring document cleaning." , new Object[] {} );
         }
         
-        int num_tokens = processText(aJCas, input_document, unprocessed_text_id);
+        int num_tokens = processText(aJCas, input_document, unprocessed_text_id, false);
+        if (mIncludeDataWithoutSpellcheck) {
+        	int raw_num_tokens = processText(aJCas, cleaned_document, unprocessed_text_id, true);
+        }
         raw_text.setNumTokens(num_tokens);
         
-        try (DatabaseConnector mysql_connector = new DatabaseConnector(database_connection)) {
-            mysql_connector.connect();
-            Connection sql_connection = mysql_connector.getConnection();
-            CallableStatement sp_call = null;
+        //We do not need to add the unprocessed text as that is the text inside of the database.  
+        try (DatabaseConnector connector = new DatabaseConnector(database_connection)) {
+        	connector.connect();
+            Connection connection = connector.getConnection();
+            Integer user_id = connector.getLoggingUserId();
+            
             if (raw_text.getIsDocument()) {
-                sp_call = sql_connection.prepareCall("{call insert_source_token_count(?, ?, ?)}");
+            	DatabaseHelper.insertDocumentTokenCount(connection, user_id, unprocessed_text_id, input_document, num_tokens);
             } else {
-                sp_call = sql_connection.prepareCall("{call insert_category_token_count(?, ?, ?)}");
+                DatabaseHelper.insertCategoryTokenCount(connection, user_id, unprocessed_text_id, input_document, num_tokens);
             }
-            sp_call.setInt(1, unprocessed_text_id);
-            sp_call.setString(2,  input_document);
-            sp_call.setInt(3, num_tokens);
-            sp_call.execute();
+            
         } catch (SQLException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -8,9 +8,9 @@ import opennlp.tools.doccat.DocumentSample;
 
 public class DocumentClassifier_DiscreteCategories extends DocumentClassifier_ImplBase {
     
-    public DocumentClassifier_DiscreteCategories(Connection sql_connection) throws SQLException {
-        super(sql_connection);
-        Setup();
+    public DocumentClassifier_DiscreteCategories(Connection sql_connection, Integer user_id) throws SQLException {
+        super(sql_connection, user_id);
+        Setup(user_id);
     }
 
     @Override

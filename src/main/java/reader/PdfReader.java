@@ -64,10 +64,12 @@ public class PdfReader extends Reader_ImplBase {
             document_text = document_text.replace(target_regs_2, replacement_regs_2);
             
             ArrayList<TextObject> ret = new ArrayList<TextObject>();
+            //Note that this is is not an either-or. The same document could be in both. 
             if (isModelData == true) {
                 TextObject text_object = new TextObject();
                 text_object.setId(file.getName());
                 text_object.setText(document_text);
+                text_object.setPath(file.getAbsolutePath());
                 text_object.setIsModelData(true);
                 ret.add(text_object);
             }
@@ -75,6 +77,7 @@ public class PdfReader extends Reader_ImplBase {
                 TextObject text_object = new TextObject();
                 text_object.setId(file.getName());
                 text_object.setText(document_text);
+                text_object.setPath(file.getAbsolutePath());
                 text_object.setIsModelData(false);
                 ret.add(text_object);
             }

@@ -42,7 +42,7 @@ public class CsvReader extends Reader_ImplBase {
                     String id = StringEscapeUtils.escapeSql(record.get(mCsvObject.getCsvIdColumn()));
                     String text = StringEscapeUtils.escapeSql(record.get(mCsvObject.getCsvTextColumn()));
                     Boolean is_model_text = mCsvObject.getIsModelData();
-                    TextObject text_object = new TextObject(id, text, is_model_text);
+                    TextObject text_object = new TextObject(id, text, mCsvObject.getCsvFile(), is_model_text, null, null);
                     mTextObjects.add(text_object);
                 }
             }
@@ -55,7 +55,7 @@ public class CsvReader extends Reader_ImplBase {
         }
     }
     
-    public ArrayList<TextObject> ReadText(File file, String[] csvIdHeaders, String[] csvTextHeaders, Boolean isModelData, Boolean isSourceData) throws FileNotFoundException, IOException, CollectionException {
+    public ArrayList<TextObject> ReadText(File file, String[] csvIdHeaders, String[] csvTextHeaders, String[] csvCategoryHeaders, Boolean isModelData, Boolean isSourceData) throws FileNotFoundException, IOException, CollectionException {
         
         if (isModelData == false && isSourceData == false) {
             throw new CollectionException("Model text and source text are both false. At least 1 should be true.", new Object[] {} );
@@ -67,13 +67,15 @@ public class CsvReader extends Reader_ImplBase {
     
                 String id_column = null;
                 String text_column = null;
+                String category_column = null;
                 for (String id_header : csvIdHeaders) {
                     if (headers.containsKey(id_header)) {
                         id_column = id_header;
                     }
                 }
                 if (id_column == null) {
-                    throw new CollectionException(String.format("CSV file %s does not have a recognized id header (Headers are: %s). Make sure to edit the XML file to provide an id header.", file.getAbsolutePath(), headers), new Object[] {} );
+                    //id_column can be null
+                	//throw new CollectionException(String.format("CSV file %s does not have a recognized id header (Headers are: %s). Make sure to edit the XML file to provide an id header.", file.getAbsolutePath(), headers), new Object[] {} );
                 }
                 
                 for (String text_header : csvTextHeaders) {
@@ -85,18 +87,30 @@ public class CsvReader extends Reader_ImplBase {
                     throw new CollectionException(String.format("CSV file %s does not have a recognized text header (Headers are: %s). Make sure to edit the XML file to provide a text header.", file.getAbsolutePath(), headers), new Object[] {} );
                 }
                 
+                for (String category_header : csvCategoryHeaders) {
+                	if (headers.containsKey(category_header)) {
+                		category_column = category_header;
+                    }
+                }
+                
+                //All model data must have a category. 
+                if (isModelData == true && category_column == null) {
+                	throw new CollectionException(String.format("CSV file %s does not have a recognized category header but is model data (Headers are: %s). Make sure to edit the XML file to provide a category header for model data.", file.getAbsolutePath(), headers), new Object[] {} );
+                }
+                
                 ArrayList<TextObject> ret = new ArrayList<TextObject>();
                 for (CSVRecord record : parser) {
-                    
-                    String id = StringEscapeUtils.escapeSql(record.get(id_column));
+                    String id = id_column == null ? null : StringEscapeUtils.escapeSql(record.get(id_column));
                     String text = StringEscapeUtils.escapeSql(record.get(text_column));
+                    String category = category_column == null ? null : StringEscapeUtils.escapeSql(record.get(category_column));
+                    
                     if (isModelData == true) { 
-                        TextObject text_object = new TextObject(id, text, true);
+                        TextObject text_object = new TextObject(id, text, file.getAbsolutePath(), true, null, category);
                         ret.add(text_object);
                     }
                     
                     if (isSourceData == true) { 
-                        TextObject text_object = new TextObject(id, text, false);
+                        TextObject text_object = new TextObject(id, text, file.getAbsolutePath(), false, null, null);
                         ret.add(text_object);
                     }
                 }

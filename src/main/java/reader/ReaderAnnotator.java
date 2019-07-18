@@ -167,9 +167,9 @@ public class ReaderAnnotator extends JCasMultiplier_ImplBase {
                  * @TODO: fix this to work with inserting categories
                  * @TODO: allow the true to varry with a column or input value. 
                  */
-                database_text_id = DatabaseHelper.insertCategoryText(connection, connector.getLoggingUserId(), text_object.getId(), text_object.getText(), null, true);
+                database_text_id = DatabaseHelper.insertCategoryText(connection, connector.getLoggingUserId(), text_object.getId(), text_object.getText(), text_object.getPath(), null, true);
             } else {
-                database_text_id = DatabaseHelper.insertDocumentText(connection, connector.getLoggingUserId(), text_object.getId(), text_object.getText());
+                database_text_id = DatabaseHelper.insertDocumentText(connection, connector.getLoggingUserId(), text_object.getId(), text_object.getText(), text_object.getPath());
             }            
     
             String text = text_object.getText();

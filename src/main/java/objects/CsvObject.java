@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Oct 17 18:45:57 EDT 2018 */
+/* Apache UIMA v3 - First created by JCasGen Thu May 23 15:02:13 EDT 2019 */
 
 package objects;
 
@@ -19,8 +19,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Oct 17 18:45:57 EDT 2018
- * XML source: /home/ben/workspace/opennlp_processing/desc/objects/CsvObject.xml
+ * Updated by JCasGen Thu May 23 15:02:13 EDT 2019
+ * XML source: /home/ben/workspace/NLP_Stack/desc/objects/CsvObject.xml
  * @generated */
 public class CsvObject extends Annotation {
  
@@ -54,6 +54,7 @@ public class CsvObject extends Annotation {
   public final static String _FeatName_CsvFile = "CsvFile";
   public final static String _FeatName_CsvIdColumn = "CsvIdColumn";
   public final static String _FeatName_CsvTextColumn = "CsvTextColumn";
+  public final static String _FeatName_CsvCategoryColumn = "CsvCategoryColumn";
   public final static String _FeatName_IsModelData = "IsModelData";
 
 
@@ -64,6 +65,8 @@ public class CsvObject extends Annotation {
   private final static MethodHandle _FH_CsvIdColumn = _FC_CsvIdColumn.dynamicInvoker();
   private final static CallSite _FC_CsvTextColumn = TypeSystemImpl.createCallSite(CsvObject.class, "CsvTextColumn");
   private final static MethodHandle _FH_CsvTextColumn = _FC_CsvTextColumn.dynamicInvoker();
+  private final static CallSite _FC_CsvCategoryColumn = TypeSystemImpl.createCallSite(CsvObject.class, "CsvCategoryColumn");
+  private final static MethodHandle _FH_CsvCategoryColumn = _FC_CsvCategoryColumn.dynamicInvoker();
   private final static CallSite _FC_IsModelData = TypeSystemImpl.createCallSite(CsvObject.class, "IsModelData");
   private final static MethodHandle _FH_IsModelData = _FC_IsModelData.dynamicInvoker();
 
@@ -167,6 +170,25 @@ public class CsvObject extends Annotation {
    */
   public void setCsvTextColumn(String v) {
     _setStringValueNfc(wrapGetIntCatchException(_FH_CsvTextColumn), v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: CsvCategoryColumn
+
+  /** getter for CsvCategoryColumn - gets The category column for the CSV file.
+   * @generated
+   * @return value of the feature 
+   */
+  public String getCsvCategoryColumn() { return _getStringValueNc(wrapGetIntCatchException(_FH_CsvCategoryColumn));}
+    
+  /** setter for CsvCategoryColumn - sets The category column for the CSV file. 
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setCsvCategoryColumn(String v) {
+    _setStringValueNfc(wrapGetIntCatchException(_FH_CsvCategoryColumn), v);
   }    
     
    

@@ -37,9 +37,18 @@ public abstract class DocumentClassifier_ImplBase implements ObjectStream<Docume
         return categoryMap;
     }
     
-    public void Setup() throws SQLException {
-
-        CallableStatement sp_call = mSqlConnection.prepareCall("{call select_training_data()}");
+    /**
+     * Setup: This function will set up the training datasets and models
+     * @param user_id: The logging user id. 
+     * @throws SQLException
+     */
+    
+    public void Setup(Integer user_id) throws SQLException {
+    	/**
+    	 * @TODO: Unit test this. 
+    	 */
+        CallableStatement sp_call = mSqlConnection.prepareCall("{call select_training_data(?)}");
+        sp_call.setInt(1,  user_id);
         boolean res = sp_call.execute();
         ResultSet rs = sp_call.getResultSet();
         
@@ -67,9 +76,12 @@ public abstract class DocumentClassifier_ImplBase implements ObjectStream<Docume
             text_id_list.add(text_id);
             
             ArrayList<String> tokens_list = new ArrayList<String>();
-            
-            CallableStatement token_sp = mSqlConnection.prepareCall("{call select_category_text_tokens(?)}");
-            token_sp.setInt(1, text_id);
+            /**
+        	 * @TODO: Unit test this. 
+        	 */
+            CallableStatement token_sp = mSqlConnection.prepareCall("{call select_category_text_tokens(?, ?)}");
+            token_sp.setInt(1, user_id);
+            token_sp.setInt(2, text_id);
             token_sp.execute();
             ResultSet rs_tokens = token_sp.getResultSet();
             while (rs_tokens.next()) {
@@ -87,7 +99,7 @@ public abstract class DocumentClassifier_ImplBase implements ObjectStream<Docume
         }
     }
     
-    public DocumentClassifier_ImplBase(Connection sql_connection) throws SQLException {
+    public DocumentClassifier_ImplBase(Connection sql_connection, Integer user_id) throws SQLException {
         documentSampleList = new ArrayList<DocumentSample>();
         documentSampleListIdx = 0;
         
@@ -103,7 +115,7 @@ public abstract class DocumentClassifier_ImplBase implements ObjectStream<Docume
         
         activeCategoryId = null;
         
-        Setup();
+        Setup(user_id);
     }
 
     @Override

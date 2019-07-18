@@ -15,7 +15,16 @@ public class TextReader extends Reader_ImplBase {
         // TODO Auto-generated method stub
 
     }
-
+    /**
+     * @TODO: Make this have a category classification. 
+     * @param file
+     * @param isModelData
+     * @param isSourceData
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws CollectionException
+     */
     public ArrayList<TextObject> ReadText(File file, Boolean isModelData, Boolean isSourceData) throws FileNotFoundException, IOException, CollectionException {
         
         if (isModelData == false && isSourceData == false) {
@@ -27,10 +36,10 @@ public class TextReader extends Reader_ImplBase {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (isModelData == true) {
-                    ret.add(new TextObject(null, line, true));
+                    ret.add(new TextObject(null, line, file.getAbsolutePath(), true, null, null));
                 }
                 if (isSourceData == true) {
-                    ret.add(new TextObject(null, line, false));
+                    ret.add(new TextObject(null, line, file.getAbsolutePath(), false, null, null));
                 }
             }
             return ret;

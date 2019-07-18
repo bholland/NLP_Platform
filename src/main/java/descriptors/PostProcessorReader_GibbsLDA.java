@@ -1,8 +1,10 @@
 package descriptors;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -83,4 +85,30 @@ public class PostProcessorReader_GibbsLDA extends DatabaseCollectionReader_ImplB
     public boolean hasNext() throws IOException, CollectionException {
         return mOptionsIndex < mOptions.size();
     }
+
+	@Override
+	public void getNextJob(Connection connection, Integer user_id) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public HashMap<String, String> getJobParameters(Connection connection, Integer user_id, Integer job_queue_id)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createJob(Connection connection, Integer user_id) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setJobParameters(Connection connection, Integer user_id, Integer job_queue_id,
+			HashMap<String, String> params) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
 }

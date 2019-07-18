@@ -33,6 +33,7 @@ public class HtmlReader extends Reader_ImplBase {
             TextObject text_object = new TextObject();
             text_object.setId(file.getName());
             text_object.setText(text);
+            text_object.setPath(file.getAbsolutePath());
             text_object.setIsModelData(true);
             ret.add(text_object);
         }
@@ -40,6 +41,7 @@ public class HtmlReader extends Reader_ImplBase {
             TextObject text_object = new TextObject();
             text_object.setId(file.getName());
             text_object.setText(text);
+            text_object.setPath(file.getAbsolutePath());
             text_object.setIsModelData(false);
             ret.add(text_object);
         }

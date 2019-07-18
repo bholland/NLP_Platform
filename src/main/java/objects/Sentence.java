@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Oct 17 18:46:58 EDT 2018 */
+/* Apache UIMA v3 - First created by JCasGen Mon Jun 24 16:57:54 EDT 2019 */
 
 package objects;
 
@@ -21,8 +21,8 @@ import org.apache.uima.jcas.cas.BooleanArray;
 
 
 /** 
- * Updated by JCasGen Wed Oct 17 18:46:58 EDT 2018
- * XML source: /home/ben/workspace/opennlp_processing/desc/objects/Sentence.xml
+ * Updated by JCasGen Mon Jun 24 16:57:54 EDT 2019
+ * XML source: /home/ben/workspace/NLP_Stack/desc/annotators/SentenceSplittingAnnotator.xml
  * @generated */
 public class Sentence extends Annotation {
  
@@ -66,6 +66,7 @@ public class Sentence extends Annotation {
   public final static String _FeatName_IsHospital = "IsHospital";
   public final static String _FeatName_IsPerson = "IsPerson";
   public final static String _FeatName_IsIllness = "IsIllness";
+  public final static String _FeatName_IsRawSentence = "IsRawSentence";
 
 
   /* Feature Adjusted Offsets */
@@ -95,6 +96,8 @@ public class Sentence extends Annotation {
   private final static MethodHandle _FH_IsPerson = _FC_IsPerson.dynamicInvoker();
   private final static CallSite _FC_IsIllness = TypeSystemImpl.createCallSite(Sentence.class, "IsIllness");
   private final static MethodHandle _FH_IsIllness = _FC_IsIllness.dynamicInvoker();
+  private final static CallSite _FC_IsRawSentence = TypeSystemImpl.createCallSite(Sentence.class, "IsRawSentence");
+  private final static MethodHandle _FH_IsRawSentence = _FC_IsRawSentence.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -541,6 +544,25 @@ public class Sentence extends Annotation {
   public void setIsIllness(int i, boolean v) {
     ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_IsIllness)))).set(i, v);
   }  
+   
+    
+  //*--------------*
+  //* Feature: IsRawSentence
+
+  /** getter for IsRawSentence - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public boolean getIsRawSentence() { return _getBooleanValueNc(wrapGetIntCatchException(_FH_IsRawSentence));}
+    
+  /** setter for IsRawSentence - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setIsRawSentence(boolean v) {
+    _setBooleanValueNfc(wrapGetIntCatchException(_FH_IsRawSentence), v);
+  }    
+    
   }
 
     

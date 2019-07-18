@@ -48,7 +48,7 @@ public class DocumentClassifier_CPE extends DatabaseCollectionReader_ImplBase {
             Connection sql_connection = sql_connector.getConnection();
             mLoggingUserId = DatabaseHelper.getLoggingUserNameId(sql_connection, LOGGING_USER);
             try (DocumentClassifier_Binary classifier = new DocumentClassifier_Binary(sql_connection, mLoggingUserId)) {
-                mCategories = classifier.GetCategories();
+                mCategories = classifier.GetCategories(); 
                 mKeys = mCategories.keySet();
                 mKeysIter = mKeys.iterator();
                 mKeysIndex = 0;
@@ -112,4 +112,29 @@ public class DocumentClassifier_CPE extends DatabaseCollectionReader_ImplBase {
         
     }
 
+	@Override
+	public void getNextJob(Connection connection, Integer user_id) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public HashMap<String, String> getJobParameters(Connection connection, Integer user_id, Integer job_queue_id)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createJob(Connection connection, Integer user_id) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setJobParameters(Connection connection, Integer user_id, Integer job_queue_id,
+			HashMap<String, String> params) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -211,4 +212,30 @@ public class PostProcessor_CosDistance extends DatabaseCollectionReader_ImplBase
     public boolean hasNext() throws IOException, CollectionException {
         return mTextIndex < mTextIDs.size();
     }
+
+	@Override
+	public void getNextJob(Connection connection, Integer user_id) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public HashMap<String, String> getJobParameters(Connection connection, Integer user_id, Integer job_queue_id)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createJob(Connection connection, Integer user_id) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setJobParameters(Connection connection, Integer user_id, Integer job_queue_id,
+			HashMap<String, String> params) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
 }
