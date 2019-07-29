@@ -1,0 +1,633 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The NLP Platform Documentation
+\end_layout
+
+\begin_layout Author
+Benedict Holland
+\end_layout
+
+\begin_layout Date
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+today
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+I desgned the NLP Platform to accept a variety of document formats, process
+ all documents in a series of uniform steps, and produce outputs.
+ The application essentially relies on two UIMA objects: the cpeDescription
+ object has an iterator called a collectionReader and a series of casProcessor
+ objects that are annotators.
+ The collectionReader will iterate over a collection and produce individual
+ objects.
+ The UIMA framework calls the iterator for the next object and feeds it
+ into the neural net.
+ 
+\end_layout
+
+\begin_layout Standard
+UIMA defines the process flow for the neural net.
+ It is made up of a series of objects called annotators.
+ The annotator accepts inputs and produces outputs.
+ There is an object called a CAS or the Common Analysis System.
+ Essentially, this object stores data for a particular thread across the
+ neural net.
+ For example, say the user has a set of documents that they want split into
+ sentences and those sentences split into tokens.
+\end_layout
+
+\begin_layout Enumerate
+The collectionReader object will discover all of the documents in the set.
+\end_layout
+
+\begin_layout Enumerate
+The collectionReader object will give the next document (1 of many documents
+ in the set) to the CAS.
+\end_layout
+
+\begin_layout Enumerate
+UIMA will process the annotators in the order that is in the content processing
+ engine description (the set of annotators).
+\end_layout
+
+\begin_layout Enumerate
+The first annotator will accept the document and split it into sentences.
+ It will place each of the sentences in the current CAS.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The second annotator, the sentence to database annotator, will accept all
+ the sentences in the CAS and iterate over them.
+ 
+\end_layout
+
+\begin_layout Enumerate
+For each sentence, the annotator will split it into tokens, tags, additional
+ processes, etc.
+ and place the results in the database.
+ 
+\end_layout
+
+\begin_layout Standard
+This process is multi-threaded per document but developers could make it
+ multi-threaded per sentence or other iterable object.
+\end_layout
+
+\begin_layout Section
+Application Setup
+\end_layout
+
+\begin_layout Enumerate
+1.
+ Install software
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Java openjdk > version 10 (https://jdk.java.net/12/ Latest at time of writing)
+\end_layout
+
+\begin_layout Enumerate
+Python3, pipenv or virtual env, and assocaited packages.
+ (https://www.python.org/downloads/)
+\end_layout
+
+\begin_layout Enumerate
+Eclipse (https://www.eclipse.org/) for java developers.
+\end_layout
+
+\begin_layout Enumerate
+Eclipse pydev plugin (eclipse marketplace)
+\end_layout
+
+\begin_layout Enumerate
+Postgresql sever (https://www.postgresql.org/download/ but please note that
+ you might have to manually config the parameters to make it run on the
+ command line.)
+\end_layout
+
+\begin_layout Enumerate
+SQItch for sql schema tracking (https://sqitch.org/)
+\end_layout
+
+\begin_layout Enumerate
+UIMA Framework for Eclipse (Follow this guide: https://uima.apache.org/downloads/r
+eleaseDocs/2.2.2-incubating/docs/html/overview_and_setup/overview_and_setup.html#ug
+r.ovv.eclipse_setup)
+\end_layout
+
+\begin_layout Enumerate
+pgadmin4 locally (might come with python and I would chose to run it under
+ an apache2 local server).
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+On windows, add the postgresql scripts (pgsql) to the PATH.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Set maximum number of users to 150.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+On ubuntu, edit /etc/postgresql/10/main/postgresql.conf and set max_connections
+ = 200
+\end_layout
+
+\begin_layout Enumerate
+On windows edit C:
+\backslash
+Program Files
+\backslash
+PostgreSQL
+\backslash
+10
+\backslash
+data
+\backslash
+postgresql.conf
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Create a database called nlp_template.
+ The reason you need the nlp_template database is that this is the root
+ database that the various test databases copy from.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+createdb nlp_template
+\end_layout
+
+\begin_layout Enumerate
+psql -d nlp_template -f nlp_schema.sql
+\end_layout
+
+\begin_layout Enumerate
+Load the nlp schema
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+run sqitch deploy
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Create your project database from the nlp_schema.
+ I call mine fjsp.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+createdb fjsp
+\end_layout
+
+\begin_layout Enumerate
+psql -d nlp_template -f nlp_schema.sql
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Describe the xml installer, run python -m Main.main
+\end_layout
+
+\begin_layout Section
+Application Structure
+\end_layout
+
+\begin_layout Standard
+XML defines the design of the application.
+ The XML links the dataset iterator to objects, the objects to annotators,
+ and annotators to application flow.
+ Typically, the first thing I create is the XML.
+ When I design this properly, the java code essentially writes itself.
+ UIMA handles the pipeline management and links between annotators.
+ 
+\end_layout
+
+\begin_layout Standard
+Because of this, when I add new features, the first thing I work on in the
+ cpeDescription object (Section 3.3 under https://uima.apache.org/d/uimaj-current/t
+utorials_and_users_guides.html).
+ This object specifies a reader object and a set of annotators.
+ Next, I design the the reader object (search https://uima.apache.org/d/uimaj-curr
+ent/tutorials_and_users_guides.html for collectionReaderDescription).
+ This will take a location (probably a folder path) and probably a set of
+ things to read.
+ 
+\end_layout
+
+\begin_layout Standard
+Next, I create a set of primitive objects called typeSystemDescription objects.
+ The typeSystemDescription objects essentally form the base for the applications.
+ Users can create these from the eclipse UIMA plugin by right-clicking on
+ a folder, selecting new -> other -> UIMA -> Type System Descriptor File.
+ This is basically a collection of primitive objects (think of structs)
+ and will define an XML representation of an object.
+ If you are using the eclipse UIMA plugin, there is a button named Jcas
+ Gen and that will generate java bindings for the objects defined in XML.
+ For some reason, the newly created java code gets placed in src/test/java/
+ rather than src/main/java/.
+ I don't know why.
+\end_layout
+
+\begin_layout Standard
+Annotators inherit these objects.
+ Users can specify which typeSystemDescription obects the annotator can
+ use (either as input or output) in the Type System tab.
+ The add button will allow the user to inherit these xml object files.
+ The user can now use them in the Capabilities tab and specify if the annotator
+ should accept them as input or adds them to the CAS as output.
+ Typically, users would want to input or export all features for the objects.
+ 
+\end_layout
+
+\begin_layout Standard
+Once I create the objects and the reader, I move onto the annotators.
+ The annotators will manipulate the objects either by creating new objects
+ or modifying the existing objects.
+ Users can aggregate annotators so that they run in order.
+ One key aspect of annotators is the parameters.
+ Users should think of parameters as essentially command line options.
+ Users define the parameters in the Parameters tab and set their values
+ in the Parameter Settings tab.
+ Annotators have access to these configuration options in the annotator
+ initialize function (which users should probably override in every annotator
+ and as a general rule).
+ The name of the parameter in the java code must match the string name in
+ the xml document.
+ See the annotators in the platform for examples.
+ 
+\end_layout
+
+\begin_layout Standard
+All of the XML objects are instantiated from java in the annotator process
+ method.
+ The annotator process method accepts a CAS object that all object creator
+ functions inherit.
+ This implies that the only location annotators can (and should) create
+ typeSystemDescription objects is in the process method.
+ 
+\end_layout
+
+\begin_layout Standard
+The CAS bares additional discussion.
+ UIMA creates a framework to manage asyncronous tasks.
+ This means that threads can process layers in the neural net independant
+ from other processes.
+ The CAS essentially saves the state of threads in the network.
+ The CAS is how UIMA passes informaiton between annotators, saves state,
+ and manages the process flow.
+ If users want to save objects to the CAS, users must create the typeSystemDescr
+iption object and save it to the CAS with the addToIndexes method.
+ 
+\end_layout
+
+\begin_layout Section
+Reading Files
+\end_layout
+
+\begin_layout Standard
+The platform handles file input using modules.
+ The goal of this is to standarize text from a variety of sources into something
+ called a text object.
+ I included a reader called a collection_readers.FolderReader.java.
+ This particular reader has a lot of configuration options but the general
+ idea behind this reader is to read everything under a user-provided folder
+ and process files into a generic text object.
+ The generic text object has many tags and features around the various file.
+ For example, the CSV reader module will read the csv document and create
+ a new text object for each row.
+ For a PDF document, the PDF reader module will extract all of the text
+ and create a single text object.
+ Users set the folder reader options in the XML, including which object
+ types to extract data from.
+ 
+\end_layout
+
+\begin_layout Standard
+The Folder Reader object is particularly generic and while this does make
+ it flexable, it also requires a fair amount of setup to really get working.
+ As such, it takes a lot of parameters.
+ At the time of this writing, the parameters are:
+\end_layout
+
+\begin_layout Itemize
+BaseFolder: This is the base folder to start reading from.
+ It will accept either full or relative paths.
+ 
+\end_layout
+
+\begin_layout Itemize
+IsRecursive: If the folder has sub-folders, recurse into all of the subfolders.
+ 
+\end_layout
+
+\begin_layout Itemize
+ReadText: This is a boolean parameter that, when true, will read plain text
+ files (probably with a txt extention) and create one TextObject object
+ per file.
+ If false, it will skip text files.
+\end_layout
+
+\begin_layout Itemize
+ReadPdf: This is a boolean parameter that, when true, will read PDF files
+ (probably with a pdf extention) and create one TextObject object per file.
+ If false, it will skip pdf files.
+\end_layout
+
+\begin_layout Itemize
+ReadCsv: This is a boolean parameter that, when true, will read CSV files
+ (probably with a pdf extention) and create one TextObject object per file.
+ If false, it will skip csv files.
+\end_layout
+
+\begin_layout Itemize
+ReadHtml: This is a boolean parameter that, when true, will read HTML files
+ (probably with a pdf extention) and create one TextObject object per file.
+ Please note that this will attempt to parse the HTML and strip all tags.
+ It actaually attempts to only capture text that gets displayed.
+ If false, it will skip html files.
+\end_layout
+
+\begin_layout Itemize
+ReadWord: This is a boolean parameter that, when true, will read DOCX files
+ (probably with a docx extention) and create one TextObject object per file.
+ If false, it will skip docx files.
+\end_layout
+
+\begin_layout Itemize
+CsvIdHeaders: This is a list of ID column names to find in csv files.
+ Basically, the platform will attempt to find a column in the csv file that
+ matches exactly (case senative) an id column in this list.
+ Please note that this isn't a required option.
+ Linking data back to the csv file is not mandatory and if a csv file does
+ not contain a header that matches one of these values, the application
+ continues to run.
+ 
+\end_layout
+
+\begin_layout Itemize
+CsvTextHeaders: Similar to the id headers, this is a list of column names
+ for texts.
+ Unlike the id headers, this is actually mandatory.
+ If a csv file does not contain a column name denoting a text column, the
+ application will error.
+ 
+\end_layout
+
+\begin_layout Itemize
+CsvCategoryHeaders: Similar to the id headers, this is a list of column
+ categories for texts.
+ This column must appear in any csv file denoted to contain category data.
+ Otherwise, the platform does not use this parameter.
+ 
+\end_layout
+
+\begin_layout Itemize
+DataType: This parameter can take on 3 values.
+ A value of 
+\begin_inset Quotes eld
+\end_inset
+
+0
+\begin_inset Quotes erd
+\end_inset
+
+ denotes that the folder reader reads the contents as data to categorize.
+ A value of 
+\begin_inset Quotes eld
+\end_inset
+
+1
+\begin_inset Quotes erd
+\end_inset
+
+ denotes that the folder reader reads teh contexts as data that defines
+ categories.
+ CsvCategoryHeaders must contain valid entries and csv files without a column
+ name in CsvCategoryHeaders will error.
+ A value of 
+\begin_inset Quotes eld
+\end_inset
+
+2
+\begin_inset Quotes erd
+\end_inset
+
+ denotes that the data is both.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+2
+\begin_inset Quotes erd
+\end_inset
+
+ is particularly useful for doing many to many mappings (cosine distance)
+ or other comparisons.
+ 
+\end_layout
+
+\begin_layout Itemize
+DatabaseServer: The database server to conect to.
+ 
+\end_layout
+
+\begin_layout Itemize
+Database: The database to use.
+ 
+\end_layout
+
+\begin_layout Itemize
+DatabaseUserName: The database username.
+ 
+\end_layout
+
+\begin_layout Itemize
+DatabasePassword: The database password associated with the username.
+\end_layout
+
+\begin_layout Itemize
+DatabasePort: The database port, it assumes 5432 for postgresql.
+ 
+\end_layout
+
+\begin_layout Itemize
+DatabaseType: pgsql is currently the only accepted value.
+ 
+\end_layout
+
+\begin_layout Itemize
+LoggingUserId: This is the value of the logging user for the NLP Platform
+ (as opposed to the user from the assocated website).
+ If this user does not currently exist, it will be created.
+ 
+\end_layout
+
+\begin_layout Itemize
+UseJobQueue: This is accepts 3 values.
+ A value of 
+\begin_inset Quotes eld
+\end_inset
+
+0
+\begin_inset Quotes erd
+\end_inset
+
+ disables the job queue system and will continue to run using threads.
+ A value of 
+\begin_inset Quotes eld
+\end_inset
+
+1
+\begin_inset Quotes erd
+\end_inset
+
+ will use a job queue to insert documents into the database.
+ A value of 
+\begin_inset Quotes eld
+\end_inset
+
+2
+\begin_inset Quotes erd
+\end_inset
+
+ will use a job queue to process the doucments.
+ This is specifically designed to work well with AWS lamdba functions and
+ having ingention split from processing.
+ 
+\end_layout
+
+\begin_layout Itemize
+CleanData: This will remove all category and document data.
+\end_layout
+
+\begin_layout Section
+Processing Text or Running The Application
+\end_layout
+
+\begin_layout Section
+Generating Output
+\end_layout
+
+\begin_layout Section
+Theories Behind the Platform
+\end_layout
+
+\begin_layout Section
+References
+\end_layout
+
+\begin_layout Standard
+https://uima.apache.org/d/uimaj-current/index.html
+\end_layout
+
+\begin_layout Standard
+Use this to setup the UIMA eclipse development environment: https://uima.apache.or
+g/d/uimaj-current/overview_and_setup.html
+\end_layout
+
+\end_body
+\end_document
