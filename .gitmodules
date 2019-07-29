@@ -1,0 +1,6 @@
+[submodule "project_sql_dumps"]
+	path = project_sql_dumps
+	url = ttps://github.com/bholland/project_sql_dumps.git
+[submodule "project_xml_descriptors"]
+	path = project_xml_descriptors
+	url = https://github.com/bholland/project_xml_descriptors.git
