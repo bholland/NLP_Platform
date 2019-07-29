@@ -624,6 +624,8 @@ begin
 
 perform log_message(in_user_id, 'insert_category_text', null);
 
+new_id := null;
+
 insert into completed_processed_files
 (file_path, is_complete)
 values
@@ -637,8 +639,16 @@ where file_path = in_category_document_path;
 insert into category_text
 (category_document_id, category_document_text, completed_processed_files_id) VALUES
 (in_category_document_id, in_category_document_text, new_path_id)
+on conflict on constraint category_text_category_document_id_completed_processed_file_key do nothing
 returning category_text.id into new_id;
 
+if new_id is null then
+	select category_text.id into new_id
+	from category_text
+	where category_document_id = in_category_document_id and
+	completed_processed_files_id = new_path_id;
+end if;
+	
 return QUERY
 select new_id;
 
@@ -725,6 +735,8 @@ declare new_path_id integer;
 begin
 perform log_message(in_user_id, 'insert_document_text', null);
 
+new_id := null;
+
 insert into completed_processed_files
 (file_path, is_complete)
 values
@@ -738,7 +750,15 @@ where file_path = in_original_document_path;
 insert into document_text
 (original_document_id, original_document_text, completed_processed_files_id) VALUES
 (in_original_document_id, in_original_document_text, new_path_id)
+on conflict on constraint document_text_original_document_id_completed_processed_file_key do nothing
 returning document_text.id into new_id;
+
+if new_id is null then
+	select category_text.id into new_id
+	from category_text
+	where category_document_id = in_category_document_id and
+	completed_processed_files_id = new_path_id;
+end if;
 
 return query
 select new_id;
@@ -4937,6 +4957,14 @@ ALTER TABLE ONLY public.category_sentences_metadata
 
 
 --
+-- Name: category_text_category_document_id_completed_processed_file_key; Type: CONSTRAINT; Schema: public; Owner: ben
+--
+
+ALTER TABLE ONLY public.category_text
+    ADD CONSTRAINT category_text_category_document_id_completed_processed_file_key UNIQUE (category_document_id, completed_processed_files_id);
+
+
+--
 -- Name: category_text_id_pkey; Type: CONSTRAINT; Schema: public; Owner: ben
 --
 
@@ -5038,6 +5066,14 @@ ALTER TABLE ONLY public.django_session
 
 ALTER TABLE ONLY public.multiuser_document_classification_status_labels
     ADD CONSTRAINT document_classification_status_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: document_text_original_document_id_completed_processed_file_key; Type: CONSTRAINT; Schema: public; Owner: ben
+--
+
+ALTER TABLE ONLY public.document_text
+    ADD CONSTRAINT document_text_original_document_id_completed_processed_file_key UNIQUE (original_document_id, completed_processed_files_id);
 
 
 --
