@@ -51,7 +51,12 @@
                    When running code, make this 1. The application has to fork. Otherwise, nd4j will throw a runtime
                    error about how a library was already loaded. It gets loaded by the unit tests and not released.  
               -->
-              <forkCount>0</forkCount> 
+              <forkCount>0</forkCount>
+	      <excludes>
+		<!-- define the excludes here -->
+		<!-- for example, this will excldue the multiuser tests. -->
+		<!-- <exclude>**Multiuser*.java</exclude> -->
+	      </excludes>
             </configuration>
           </plugin>
           
