@@ -10,8 +10,8 @@ if [ $# == 1 ]; then
     exit 0
 fi
 
-# clone the github reposatory
-( git clone nlp_platform_repo ) || exit 1
+# clone the github reposatory, skip this as it already gets pulled in.
+#( git clone nlp_platform_repo ) || exit 1
 
 # add the passed repo to the project_xml_descriptors
 ( git config --file=.gitmodules submodule.project_xml_descriptors.url $1) || exit 1
