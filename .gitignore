@@ -1,6 +1,9 @@
 # My additions
 project_training_data/*
 
+#The pom file. Do not comment this. Copy from pom_example.xml.
+pom.xml
+
 # Created by https://www.gitignore.io/api/sbt,scala
 
 ### SBT ###
