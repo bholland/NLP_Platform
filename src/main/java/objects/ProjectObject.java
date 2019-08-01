@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Mon Jul 08 13:18:30 EDT 2019 */
+/* Apache UIMA v3 - First created by JCasGen Mon Jul 08 13:22:10 EDT 2019 */
 
 package objects;
 
@@ -19,8 +19,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Jul 08 13:18:32 EDT 2019
- * XML source: /home/ben/workspace/NLP_Stack/desc/objects/ProjectObject.xml
+ * Updated by JCasGen Mon Jul 08 13:22:10 EDT 2019
+ * XML source: /home/ben/workspace/NLP_Stack/desc/ContentProcessingEngine/FJSP/Setup_CPE.xml
  * @generated */
 public class ProjectObject extends Annotation {
  
@@ -136,13 +136,13 @@ public class ProjectObject extends Annotation {
   //*--------------*
   //* Feature: ProjectType
 
-  /** getter for ProjectType - gets The project type. Currently, the only supported type is dual_validation. 
+  /** getter for ProjectType - gets The project type. Currently, the only supported type is dual_validation.
    * @generated
    * @return value of the feature 
    */
   public String getProjectType() { return _getStringValueNc(wrapGetIntCatchException(_FH_ProjectType));}
     
-  /** setter for ProjectType - sets The project type. Currently, the only supported type is dual_validation.  
+  /** setter for ProjectType - sets The project type. Currently, the only supported type is dual_validation. 
    * @generated
    * @param v value to set into the feature 
    */
@@ -155,13 +155,13 @@ public class ProjectObject extends Annotation {
   //*--------------*
   //* Feature: CheckoutTimeout
 
-  /** getter for CheckoutTimeout - gets The value of the checkout timeout. 
+  /** getter for CheckoutTimeout - gets The value of the checkout timeout.
    * @generated
    * @return value of the feature 
    */
   public int getCheckoutTimeout() { return _getIntValueNc(wrapGetIntCatchException(_FH_CheckoutTimeout));}
     
-  /** setter for CheckoutTimeout - sets The value of the checkout timeout.  
+  /** setter for CheckoutTimeout - sets The value of the checkout timeout. 
    * @generated
    * @param v value to set into the feature 
    */
@@ -174,13 +174,13 @@ public class ProjectObject extends Annotation {
   //*--------------*
   //* Feature: ProjectOwner
 
-  /** getter for ProjectOwner - gets This will specify the user name of the project owner. If this user does not exist (case senseative), it will be created and assigned as the owner. 
+  /** getter for ProjectOwner - gets This will specify the user name of the project owner. If this user does not exist (case senseative), it will be created and assigned as the owner.
    * @generated
    * @return value of the feature 
    */
   public String getProjectOwner() { return _getStringValueNc(wrapGetIntCatchException(_FH_ProjectOwner));}
     
-  /** setter for ProjectOwner - sets This will specify the user name of the project owner. If this user does not exist (case senseative), it will be created and assigned as the owner.  
+  /** setter for ProjectOwner - sets This will specify the user name of the project owner. If this user does not exist (case senseative), it will be created and assigned as the owner. 
    * @generated
    * @param v value to set into the feature 
    */

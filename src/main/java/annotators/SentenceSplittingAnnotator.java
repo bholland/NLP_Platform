@@ -561,22 +561,32 @@ public Span[] getNamesSpan() {
         
         try {
             String model_file = (String) getContext().getConfigParameterValue(PARAM_HOSPITAL_MODEL_FILE);
-            File in_file = new File(model_file);
-            FileInputStream is = new FileInputStream(in_file);
-            mHospitalFinder = new NameFinderME(new TokenNameFinderModel(is));
+            if (model_file == null) {
+            	mHospitalFinder = null;
+            } else {
+            	File in_file = new File(model_file);
+            	FileInputStream is = new FileInputStream(in_file);
+            	mHospitalFinder = new NameFinderME(new TokenNameFinderModel(is));
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new ResourceInitializationException();
         }
         
         try {
             String model_file = (String) getContext().getConfigParameterValue(PARAM_ILLNESS_MODEL_FILE);
-            File in_file = new File(model_file);
-            FileInputStream is = new FileInputStream(in_file);
-            mIllnessFinder = new NameFinderME(new TokenNameFinderModel(is));
+            if (model_file == null) {
+            	mIllnessFinder = null;
+            } else {
+            	File in_file = new File(model_file);
+            	FileInputStream is = new FileInputStream(in_file);
+            	mIllnessFinder = new NameFinderME(new TokenNameFinderModel(is));
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new ResourceInitializationException();
         }
         
         try {
@@ -587,6 +597,7 @@ public Span[] getNamesSpan() {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new ResourceInitializationException();
         }
         
         try {
@@ -611,18 +622,24 @@ public Span[] getNamesSpan() {
         String ignore_file = (String) getContext().getConfigParameterValue(PARAM_IGNORE_LIST_FILE);
         mIgnoreList = new ArrayList<String>();
         if (ignore_file != null ) {
-            try (BufferedReader br = new BufferedReader(new FileReader(ignore_file))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    line = line.trim();
-                    if (line.length() > 0) {
-                        mIgnoreList.add(line);
-                    }
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        	File ignore_file_handle = new File(ignore_file);
+        	if (ignore_file_handle.exists() == false) {
+        		Logger logger = Logger.getRootLogger();
+        		logger.warn(String.format("Ignore file got passed in SentenceSplittingAnnotator.xml as %s but this file does not exist.", ignore_file));
+        	} else {
+	            try (BufferedReader br = new BufferedReader(new FileReader(ignore_file))) {
+	                String line;
+	                while ((line = br.readLine()) != null) {
+	                    line = line.trim();
+	                    if (line.length() > 0) {
+	                        mIgnoreList.add(line);
+	                    }
+	                }
+	            } catch (IOException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
+        	}
         }
         
         mIgnoreGrammer = (Boolean) getContext().getConfigParameterValue(PARAM_IGNORE_GRAMMER);

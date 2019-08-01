@@ -8,4 +8,5 @@
 	url = https://github.com/bholland/project_sql_dumps.git
 [submodule "project_xml_descriptors"]
 	path = project_xml_descriptors
-	url = https://github.com/bholland/project_xml_descriptors.git
+	url = https://bholland84@bitbucket.org/abtassociates/NLP_Stack.git
+	branch = master

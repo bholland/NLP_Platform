@@ -292,6 +292,50 @@ psql -d nlp_template -f nlp_schema.sql
 Describe the xml installer, run python -m Main.main
 \end_layout
 
+\begin_layout Enumerate
+Next, we will check out the github reposatory and walk through setting up
+ the sub module.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+git clone https://github.com/bholland/NLP_Platform.git
+\end_layout
+
+\begin_layout Enumerate
+git config --file=.gitmodules submodule.project_xml_descriptors.url https://bhollan
+d84@bitbucket.org/abtassociates/NLP_Stack.git
+\end_layout
+
+\begin_layout Enumerate
+git config --file=.gitmodules submodule.project_xml_descriptors.branch master
+\end_layout
+
+\begin_layout Enumerate
+git submodule sync
+\end_layout
+
+\begin_layout Enumerate
+git submodule update --init --remote 
+\end_layout
+
+\begin_layout Enumerate
+git fetch
+\end_layout
+
+\begin_layout Enumerate
+git reset --hard origin/master
+\end_layout
+
+\begin_layout Enumerate
+git branch
+\end_layout
+
+\begin_layout Enumerate
+git checkout master
+\end_layout
+
+\end_deeper
 \begin_layout Section
 Application Structure
 \end_layout

@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Mon Jun 24 16:57:54 EDT 2019 */
+/* Apache UIMA v3 - First created by JCasGen Mon Jul 08 13:22:10 EDT 2019 */
 
 package objects;
 
@@ -19,8 +19,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Jun 24 16:57:54 EDT 2019
- * XML source: /home/ben/workspace/NLP_Stack/desc/annotators/SentenceSplittingAnnotator.xml
+ * Updated by JCasGen Mon Jul 08 13:22:10 EDT 2019
+ * XML source: /home/ben/workspace/NLP_Stack/desc/ContentProcessingEngine/FJSP/Setup_CPE.xml
  * @generated */
 public class DatabaseConnection extends Annotation {
  

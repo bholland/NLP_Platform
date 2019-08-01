@@ -1,308 +1,461 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-    
-  <primitive>true</primitive>
-    
-  <annotatorImplementationName>annotators.SentenceSplittingAnnotator</annotatorImplementationName>
-    
-  <analysisEngineMetaData>
-        
-    <name>SentenceSplittingAnnotator</name>
-        
-    <description/>
-        
-    <version>1.0</version>
-        
-    <vendor/>
-        
-    <configurationParameters>
-            
-      <configurationParameter>
-                
-        <name>SentenceModelFile</name>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-          
-      <configurationParameter>
-                
-        <name>TokenModelFile</name>
-                
-        <description>Token model file location.</description>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-            
-      <configurationParameter>
-                
-        <name>POSTagger</name>
-                
-        <description>POS tagger. A maximum entropy tagger is optimal.</description>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-            
-      <configurationParameter>
-                
-        <name>StemmerFile</name>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-            
-      <configurationParameter>
-                
-        <name>NameFinderModelFile</name>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-            
-      <configurationParameter>
-                
-        <name>ChunkerModelFile</name>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-          
-      <configurationParameter>
-                
-        <name>IgnoreListFile</name>
-                
-        <description>A file that contains a list of words to ignore durring spell checking. There should be only one word per line.</description>
-                
-        <type>String</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-          
-      <configurationParameter>
-                
-        <name>IgnoreGrammer</name>
-                
-        <description>True if grammer rules should be ignored durring spell checking.</description>
-                
-        <type>Boolean</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>true</mandatory>
-              
-      </configurationParameter>
-          
-      <configurationParameter>
-                
-        <name>IncludeDataWithoutSpellcheck</name>
-                
-        <description>This will include both the spellchecked data as well as the raw data that went through cleaning and standardization (replacing ampersands with "and" and converting it to lower case).</description>
-                
-        <type>Boolean</type>
-                
-        <multiValued>false</multiValued>
-                
-        <mandatory>false</mandatory>
-              
-      </configurationParameter>
-          
-    </configurationParameters>
-        
-    <configurationParameterSettings>
-            
-      <nameValuePair>
-                
-        <name>SentenceModelFile</name>
-                
-        <value>
-                    
-          <string>./models/en-sent.bin</string>
-                  
-        </value>
-              
-      </nameValuePair>
-          
-      <nameValuePair>
-                
-        <name>TokenModelFile</name>
-                
-        <value>
-                    
-          <string>./models/en-token.bin</string>
-                  
-        </value>
-              
-      </nameValuePair>
-            
-      <nameValuePair>
-                
-        <name>POSTagger</name>
-                
-        <value>
-                    
-          <string>./models/en-pos-maxent.bin</string>
-                  
-        </value>
-              
-      </nameValuePair>
-            
-      <nameValuePair>
-                
-        <name>NameFinderModelFile</name>
-                
-        <value>
-                    
-          <string>./models/en-ner-person.bin</string>
-                  
-        </value>
-              
-      </nameValuePair>
-            
-      <nameValuePair>
-                
-        <name>ChunkerModelFile</name>
-                
-        <value>
-                    
-          <string>./models/en-chunker.bin</string>
-                  
-        </value>
-              
-      </nameValuePair>
-          
-      <nameValuePair>
-                
-        <name>IgnoreListFile</name>
-                
-        <value>
-                    
-          <string>./ignore_list.txt</string>
-                  
-        </value>
-              
-      </nameValuePair>
-          
-      <nameValuePair>
-                
-        <name>IgnoreGrammer</name>
-                
-        <value>
-                    
-          <boolean>true</boolean>
-                  
-        </value>
-              
-      </nameValuePair>
-          
-      <nameValuePair>
-                
-        <name>StemmerFile</name>
-                
-        <value>
-                    
-          <string>./models/en-lemmatizer.dict</string>
-                  
-        </value>
-              
-      </nameValuePair>
-          
-      <nameValuePair>
-                
-        <name>IncludeDataWithoutSpellcheck</name>
-                
-        <value>
-                    
-          <boolean>true</boolean>
-                  
-        </value>
-              
-      </nameValuePair>
-          
-    </configurationParameterSettings>
-        
-    <typeSystemDescription>
-            
-      <imports>
-                
-        <import location="../objects/Sentence.xml"/>
-              
-        <import location="../objects/UnprocessedText.xml"/>
-                
-        <import location="../objects/DatabaseConnection.xml"/>
-              
-      </imports>
-          
-    </typeSystemDescription>
-        
-    <typePriorities/>
-        
-    <fsIndexCollection/>
-        
-    <capabilities>
-            
-      <capability>
-                
-        <inputs>
-                    
-          <type allAnnotatorFeatures="true">objects.UnprocessedText</type>
-                    
-        </inputs>
-                
-        <outputs>
-                    
-          <type allAnnotatorFeatures="true">objects.Sentence</type>
-                  
-        </outputs>
-                
-        <languagesSupported/>
-              
-      </capability>
-          
-    </capabilities>
       
-    <operationalProperties>
-            
-      <modifiesCas>true</modifiesCas>
-            
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-            
-      <outputsNewCASes>false</outputsNewCASes>
-          
-    </operationalProperties>
-      
-  </analysisEngineMetaData>
-    
-  <resourceManagerConfiguration/>
   
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+      
+  
+  <primitive>true</primitive>
+      
+  
+  <annotatorImplementationName>annotators.SentenceSplittingAnnotator</annotatorImplementationName>
+      
+  
+  <analysisEngineMetaData>
+            
+    
+    <name>SentenceSplittingAnnotator</name>
+            
+    
+    <description/>
+            
+    
+    <version>1.0</version>
+            
+    
+    <vendor/>
+            
+    
+    <configurationParameters>
+                  
+      
+      <configurationParameter>
+                        
+        
+        <name>SentenceModelFile</name>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                
+      
+      <configurationParameter>
+                        
+        
+        <name>TokenModelFile</name>
+                        
+        
+        <description>Token model file location.</description>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                  
+      
+      <configurationParameter>
+                        
+        
+        <name>POSTagger</name>
+                        
+        
+        <description>POS tagger. A maximum entropy tagger is optimal.</description>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                  
+      
+      <configurationParameter>
+                        
+        
+        <name>StemmerFile</name>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                  
+      
+      <configurationParameter>
+                        
+        
+        <name>NameFinderModelFile</name>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                  
+      
+      <configurationParameter>
+                        
+        
+        <name>ChunkerModelFile</name>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                
+      
+      <configurationParameter>
+                        
+        
+        <name>IgnoreListFile</name>
+                        
+        
+        <description>A file that contains a list of words to ignore durring spell checking. There should be only one word per line.</description>
+                        
+        
+        <type>String</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>false</mandatory>
+                      
+      
+      </configurationParameter>
+                
+      
+      <configurationParameter>
+                        
+        
+        <name>IgnoreGrammer</name>
+                        
+        
+        <description>True if grammer rules should be ignored durring spell checking.</description>
+                        
+        
+        <type>Boolean</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>true</mandatory>
+                      
+      
+      </configurationParameter>
+                
+      
+      <configurationParameter>
+                        
+        
+        <name>IncludeDataWithoutSpellcheck</name>
+                        
+        
+        <description>This will include both the spellchecked data as well as the raw data that went through cleaning and standardization (replacing ampersands with "and" and converting it to lower case).</description>
+                        
+        
+        <type>Boolean</type>
+                        
+        
+        <multiValued>false</multiValued>
+                        
+        
+        <mandatory>false</mandatory>
+                      
+      
+      </configurationParameter>
+                
+    
+    </configurationParameters>
+            
+    
+    <configurationParameterSettings>
+                  
+      
+      <nameValuePair>
+                        
+        
+        <name>SentenceModelFile</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./models/en-sent.bin</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                
+      
+      <nameValuePair>
+                        
+        
+        <name>TokenModelFile</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./models/en-token.bin</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                  
+      
+      <nameValuePair>
+                        
+        
+        <name>POSTagger</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./models/en-pos-maxent.bin</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                  
+      
+      <nameValuePair>
+                        
+        
+        <name>NameFinderModelFile</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./models/en-ner-person.bin</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                  
+      
+      <nameValuePair>
+                        
+        
+        <name>ChunkerModelFile</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./models/en-chunker.bin</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                
+      
+      <nameValuePair>
+                        
+        
+        <name>IgnoreListFile</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./ignore_list.txt</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                
+      
+      <nameValuePair>
+                        
+        
+        <name>IgnoreGrammer</name>
+                        
+        
+        <value>
+                              
+          
+          <boolean>true</boolean>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                
+      
+      <nameValuePair>
+                        
+        
+        <name>StemmerFile</name>
+                        
+        
+        <value>
+                              
+          
+          <string>./models/en-lemmatizer.dict</string>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                
+      
+      <nameValuePair>
+                        
+        
+        <name>IncludeDataWithoutSpellcheck</name>
+                        
+        
+        <value>
+                              
+          
+          <boolean>true</boolean>
+                            
+        
+        </value>
+                      
+      
+      </nameValuePair>
+                
+    
+    </configurationParameterSettings>
+            
+    
+    <typeSystemDescription>
+                  
+      
+      <imports>
+                        
+        
+        <import location="../objects/Sentence.xml"/>
+                      
+        
+        <import location="../objects/UnprocessedText.xml"/>
+                        
+        
+        <import location="../objects/DatabaseConnection.xml"/>
+                      
+      
+      </imports>
+                
+    
+    </typeSystemDescription>
+            
+    
+    <typePriorities/>
+            
+    
+    <fsIndexCollection/>
+            
+    
+    <capabilities>
+                  
+      
+      <capability>
+                        
+        
+        <inputs>
+                              
+          
+          <type allAnnotatorFeatures="true">objects.UnprocessedText</type>
+                              
+        
+        </inputs>
+                        
+        
+        <outputs>
+                              
+          
+          <type allAnnotatorFeatures="true">objects.Sentence</type>
+                            
+        
+        </outputs>
+                        
+        
+        <languagesSupported/>
+                      
+      
+      </capability>
+                
+    
+    </capabilities>
+          
+    
+    <operationalProperties>
+                  
+      
+      <modifiesCas>true</modifiesCas>
+                  
+      
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+                  
+      
+      <outputsNewCASes>false</outputsNewCASes>
+                
+    
+    </operationalProperties>
+          
+  
+  </analysisEngineMetaData>
+      
+  
+  <resourceManagerConfiguration/>
+    
+
 </analysisEngineDescription>
