@@ -591,9 +591,13 @@ public Span[] getNamesSpan() {
         
         try {
             String model_file = (String) getContext().getConfigParameterValue(PARAM_PERSON_MODEL_FILE);
-            File in_file = new File(model_file);
-            FileInputStream is = new FileInputStream(in_file);
-            mPersonFinder = new NameFinderME(new TokenNameFinderModel(is));
+            if (model_file == null) {
+            	mPersonFinder = null;
+            } else {
+		        File in_file = new File(model_file);
+		        FileInputStream is = new FileInputStream(in_file);
+		        mPersonFinder = new NameFinderME(new TokenNameFinderModel(is));
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
