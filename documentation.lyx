@@ -295,6 +295,17 @@ Describe the xml installer, run python -m Main.main
 \begin_layout Enumerate
 Next, we will check out the github reposatory and walk through setting up
  the sub module.
+ Please note that I created desc_only branch that contains only the descriptor
+ folder 
+\begin_inset Quotes eld
+\end_inset
+
+desc
+\begin_inset Quotes erd
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_deeper
@@ -308,7 +319,7 @@ d84@bitbucket.org/abtassociates/NLP_Stack.git
 \end_layout
 
 \begin_layout Enumerate
-git config --file=.gitmodules submodule.project_xml_descriptors.branch master
+git config --file=.gitmodules submodule.project_xml_descriptors.branch desc_only
 \end_layout
 
 \begin_layout Enumerate
@@ -324,7 +335,7 @@ git fetch
 \end_layout
 
 \begin_layout Enumerate
-git reset --hard origin/master
+git reset --hard origin/desc_only
 \end_layout
 
 \begin_layout Enumerate
@@ -332,10 +343,15 @@ git branch
 \end_layout
 
 \begin_layout Enumerate
-git checkout master
+git checkout desc_only
 \end_layout
 
 \end_deeper
+\begin_layout Enumerate
+The configuration for this system could be quite difficult.
+ 
+\end_layout
+
 \begin_layout Section
 Application Structure
 \end_layout
